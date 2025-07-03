@@ -1,0 +1,57 @@
+from __future__ import annotations
+
+import math
+import time
+from typing import List, Tuple
+
+from misskey import Misskey
+from app.utils.helpers import format_text
+from .base import DataImporter
+from app.services.job_manager import job_status  # type: ignore
+
+__all__ = ['MisskeyDataImporter']
+
+
+class MisskeyDataImporter(DataImporter):
+    def __init__(self, session_data, token: str):
+        super().__init__(session_data)
+        self.token = token
+        self.mi = Misskey(address=session_data['hostname'], i=token)
+
+    def fetch_lines(self) -> Tuple[List[str], int]:
+        # NOTE: progress updating is optional; handled by background_processor
+        lines: List[str] = []
+        notes: List[dict] = []
+        kwargs = {}
+        with_files = False
+
+        # fetch user meta for total count
+        user_block = self.mi.users_show(user_id=self.session_data['user_id'])
+        total = int(user_block.get('notesCount', 0))
+
+        for _ in range(int(self.session_data['import_size'] / 100) + 1):
+            notes_block = self.mi.users_notes(
+                self.session_data['user_id'],
+                include_replies=False,
+                include_my_renotes=False,
+                with_files=with_files,
+                limit=100,
+                **kwargs,
+            )
+            if not notes_block:
+                if not with_files:
+                    with_files = True
+                    continue
+                break
+            kwargs['until_id'] = notes_block[-1]['id']
+            for note in notes_block:
+                if not self._format_visibility_filter(note['visibility']):
+                    continue
+                notes.append(note)
+
+        for note in notes:
+            if note.get('text') and len(note['text']) > 2:
+                for l in note['text'].splitlines():
+                    lines.append(format_text(l))
+
+        return lines, len(notes) 

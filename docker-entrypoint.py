@@ -7,6 +7,7 @@ Docker用のエントリーポイントスクリプト
 
 import os
 import subprocess
+import runpy
 
 # dataディレクトリが存在しない場合は作成
 data_dir = 'data'
@@ -29,5 +30,5 @@ else:
 # DB_PATH環境変数を設定
 os.environ['DB_PATH'] = db_path
 
-# web.pyを直接実行（環境変数が適切に設定されているため）
-exec(open('web.py', encoding='utf-8').read())
+# 新しいエントリポイントを実行
+runpy.run_module('app.run', run_name='__main__')
