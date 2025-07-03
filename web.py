@@ -28,6 +28,8 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from utils.helpers import format_bytes, dict_factory, format_text
 from models.database import db
 from models.markov_model import create_markov_model_by_multiline
+from services.job_manager import job_status
+from services.http_client import session as request_session, USER_AGENT
 
 # Original utility function moved to utils.helpers; keeping stub for backward compatibility
 
@@ -65,7 +67,7 @@ def create_markov_model_by_multiline(lines):
     from models.markov_model import create_markov_model_by_multiline as _impl
     return _impl(lines)
 
-USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Markov-Generator-Fedi) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+# USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Markov-Generator-Fedi) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 
 # job_statusの使い方
 # {
@@ -74,7 +76,7 @@ USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Markov-Generator-Fedi) A
 #   'progress': int, # 完了率 (0-100、任意)
 #   'result': Optional[str] # 完了した時のメッセージ (完了していない時はNoneにする)
 # }
-job_status = {}
+# job_status = {}
 
 
 # Sentry Logger
@@ -96,8 +98,7 @@ app = Flask(__name__)
 app.secret_key = bytes(bytearray(random.getrandbits(8) for _ in range(32)))
 app.permanent_session_lifetime = timedelta(hours=1)
 
-request_session = requests.Session()
-request_session.headers.update({'User-Agent': USER_AGENT})
+# request_session is provided by services.http_client
 
 @app.route('/')
 def root():
