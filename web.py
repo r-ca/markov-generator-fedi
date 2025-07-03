@@ -67,17 +67,27 @@ def create_markov_model_by_multiline(lines: list):
     # MeCabで形態素解析
     parsed_text = []
     mecab_options = ['-Owakati']
-    try:
-        if getattr(config, 'MECAB_DICDIR'):
-            mecab_options.append(f'-d{config.MECAB_DICDIR}')
-    except:
-        pass
-
-    try:
-        if getattr(config, 'MECAB_RC'):
-            mecab_options.append(f'-r{config.MECAB_RC}')
-    except:
-        pass
+    
+    # 環境変数を優先、config.pyはフォールバック
+    mecab_dicdir = os.environ.get('MECAB_DICDIR')
+    if not mecab_dicdir:
+        try:
+            mecab_dicdir = getattr(config, 'MECAB_DICDIR', None)
+        except:
+            pass
+    
+    if mecab_dicdir:
+        mecab_options.append(f'-d{mecab_dicdir}')
+    
+    mecab_rc = os.environ.get('MECAB_RC')
+    if not mecab_rc:
+        try:
+            mecab_rc = getattr(config, 'MECAB_RC', None)
+        except:
+            pass
+    
+    if mecab_rc:
+        mecab_options.append(f'-r{mecab_rc}')
     
     for line in lines:
         parsed_text.append(MeCab.Tagger(' '.join(mecab_options)).parse(line))
@@ -717,22 +727,27 @@ def logout():
     return redirect('/')
 
 
-PORT = 8888
-HOST = "127.0.0.1"
-DEBUG = True
+# 環境変数を優先、config.pyはフォールバック
+PORT = int(os.environ.get('PORT', 8888))
+HOST = os.environ.get('HOST', "127.0.0.1")
+DEBUG = os.environ.get('DEBUG', 'true').lower() in ('true', '1', 'yes')
 
+# config.pyで上書きされていない場合のみ環境変数以外を使用
 try:
-    PORT = config.PORT
+    if not os.environ.get('PORT'):
+        PORT = config.PORT
 except AttributeError:
     pass
 
 try:
-    DEBUG = config.DEBUG
+    if not os.environ.get('DEBUG'):
+        DEBUG = config.DEBUG
 except AttributeError:
     pass
 
 try:
-    HOST = config.HOST
+    if not os.environ.get('HOST'):
+        HOST = config.HOST
 except AttributeError:
     pass
 

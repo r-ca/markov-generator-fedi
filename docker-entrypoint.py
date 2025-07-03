@@ -29,12 +29,5 @@ else:
 # DB_PATH環境変数を設定
 os.environ['DB_PATH'] = db_path
 
-# web.pyの内容を読み込み、127.0.0.1を0.0.0.0に変更
-with open('web.py', 'r', encoding='utf-8') as f:
-    content = f.read()
-
-# ホストを0.0.0.0に変更（Docker環境用）
-content = content.replace("host='127.0.0.1'", "host='0.0.0.0'")
-
-# 修正されたコードを実行
-exec(content)
+# web.pyを直接実行（環境変数が適切に設定されているため）
+exec(open('web.py', encoding='utf-8').read())
