@@ -1,5 +1,6 @@
 import html
 import math
+import os
 import traceback
 from types import TracebackType
 from typing import Type
@@ -91,7 +92,7 @@ def create_markov_model_by_multiline(lines: list):
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Markov-Generator-Fedi) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 
-db = sqlite3.connect('markov.db', check_same_thread=False)
+db = sqlite3.connect(os.environ.get('DB_PATH', 'markov.db'), check_same_thread=False)
 db.row_factory = dict_factory
 
 # job_statusの使い方

@@ -1,14 +1,16 @@
 import sqlite3, os
 
+db_path = os.environ.get('DB_PATH', 'markov.db')
+
 try:
-    os.remove('markov.db')
+    os.remove(db_path)
 except PermissionError:
-    print('Cannot remove markov.db because file is in use or no permission.')
+    print(f'Cannot remove {db_path} because file is in use or no permission.')
 except Exception as e:
-    print(f'Cannot remove markov.db: {e!r}')
+    print(f'Cannot remove {db_path}: {e!r}')
     pass
 
-db = sqlite3.connect('markov.db')
+db = sqlite3.connect(db_path)
 
 print('Initalizing database...', end='')
 
