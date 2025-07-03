@@ -717,7 +717,7 @@ def logout():
 
 
 PORT = 8888
-HOST = 127.0.0.1
+HOST = "127.0.0.1"
 DEBUG = True
 
 try:
