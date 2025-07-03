@@ -14,7 +14,7 @@ import markovify
 import Levenshtein as levsh
 
 from app.utils.helpers import format_text, format_bytes, get_memory_usage
-from app.models.database import db
+from app.models.database import get_db_connection
 from app.services.http_client import USER_AGENT
 
 # Blueprint definition
@@ -112,10 +112,24 @@ def generate_do():
         acct = query['acct'].lstrip('@')
 
     # ----- fetch model data -----
-    cur = db.cursor()
-    cur.execute('SELECT allow_generate_by_other, data FROM model_data WHERE acct = ?', (acct,))
-    data = cur.fetchone()
-    cur.close()
+    try:
+        db = get_db_connection()
+        cur = db.cursor()
+        cur.execute('SELECT allow_generate_by_other, data FROM model_data WHERE acct = ?', (acct,))
+        data = cur.fetchone()
+        cur.close()
+    except Exception as e:
+        print(f"[ERROR] Database error in generate_do: {e}")
+        return render_template(
+            'generate.html',
+            internal_error=True,
+            internal_error_message='データベースエラーが発生しました。しばらく時間をおいてから再試行してください。',
+            text='',
+            splited_text=[],
+            acct=acct,
+            share_text='',
+            min_words=min_words,
+        )
 
     if not data:
         return render_template(
@@ -229,6 +243,19 @@ def generate_do():
             model_data_size=format_bytes(len(data['data'].encode())),
         )
 
+    except Exception as e:
+        print(f"[ERROR] Exception in generate_do: {e}")
+        return render_template(
+            'generate.html',
+            internal_error=True,
+            internal_error_message='文章生成中にエラーが発生しました。しばらく時間をおいてから再試行してください。',
+            text='',
+            splited_text=[],
+            acct=acct,
+            share_text='',
+            min_words=min_words,
+        )
+
     finally:
         # キャッシュを使用していない場合のみオブジェクトを解放
         if not use_cache and text_model is not None:
@@ -260,18 +287,23 @@ def my_delete_model_data():
     if request.form.get('agreeDelete') != 'on':
         return 'Canceled.<br><a href="/">Top</a>'
 
-    cur = db.cursor()
-    cur.execute('SELECT COUNT(*) as cnt FROM model_data WHERE acct = ?', (session['acct'],))
-    res = cur.fetchone()
-    cur.close()
+    try:
+        db = get_db_connection()
+        cur = db.cursor()
+        cur.execute('SELECT COUNT(*) as cnt FROM model_data WHERE acct = ?', (session['acct'],))
+        res = cur.fetchone()
+        cur.close()
 
-    if not res or res['cnt'] == 0:
-        return 'No data found<br><a href="/">Top</a>'
+        if not res or res['cnt'] == 0:
+            return 'No data found<br><a href="/">Top</a>'
 
-    cur = db.cursor()
-    cur.execute('DELETE FROM model_data WHERE acct = ?', (session['acct'],))
-    cur.close()
-    db.commit()
+        cur = db.cursor()
+        cur.execute('DELETE FROM model_data WHERE acct = ?', (session['acct'],))
+        cur.close()
+        db.commit()
+    except Exception as e:
+        print(f"[ERROR] Database error in delete_model_data: {e}")
+        return 'Database error occurred<br><a href="/">Top</a>'
 
     session['hasModelData'] = False
 
