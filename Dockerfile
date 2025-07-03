@@ -18,6 +18,7 @@ RUN python3 -m unidic download
 COPY . .
 
 RUN echo "PORT=8888" > config.py && \
+    echo "HOST='0.0.0.0'" >> config.py && \
     echo "DEBUG=False" >> config.py && \
     echo "MECAB_DICDIR='/usr/local/lib/python3.13/site-packages/unidic/dicdir'" >> config.py && \
     echo "MECAB_RC='/etc/mecabrc'" >> config.py
