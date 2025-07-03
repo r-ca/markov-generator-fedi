@@ -95,8 +95,9 @@ except AttributeError:
 
 app = Flask(__name__)
 # Register blueprints
-from routes import generate_bp
+from routes import generate_bp, job_bp
 app.register_blueprint(generate_bp)
+app.register_blueprint(job_bp)
 
 # ランダムバイトから鍵生成
 app.secret_key = bytes(bytearray(random.getrandbits(8) for _ in range(32)))
