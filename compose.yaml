@@ -4,9 +4,19 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - ./markov_data:/app/data
+      - markov_data:/app/data
       # - ./config.py:/app/config.py:ro
     environment:
+      # Flask settings
       - FLASK_ENV=production
       - FLASK_DEBUG=false
+      # App settings (customize as needed)
+      - PORT=8888
+      - HOST=0.0.0.0
+      - DEBUG=false
+      - MECAB_DICDIR=/usr/local/lib/python3.13/site-packages/unidic/dicdir
+      - MECAB_RC=/etc/mecabrc
     restart: unless-stopped
+
+volumes:
+  markov_data:

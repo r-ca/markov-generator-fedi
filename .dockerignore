@@ -1,0 +1,41 @@
+# Git files
+.git
+.gitignore
+
+# Docker files
+Dockerfile
+compose.yaml
+docker.md
+
+# Development files
+.vscode/
+.idea/
+*.pyc
+__pycache__/
+.pytest_cache/
+
+# Data files
+markov.db
+markov_data/
+*.log
+
+# Config files (should be mounted if needed)
+config.py
+
+# Documentation
+README.md
+docs/
+
+# Python virtual environment
+venv/
+env/
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*~
