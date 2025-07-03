@@ -14,6 +14,8 @@ from services.job_manager import job_status
 from utils.helpers import format_text
 from models.markov_model import create_markov_model_by_multiline
 from models.database import db
+from services.data_import.misskey import MisskeyDataImporter
+from services.data_import.mastodon import MastodonDataImporter
 
 __all__ = [
     'start_misskey_job',
@@ -62,60 +64,8 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
         job_status[job_id]['progress'] = 20
         job_status[job_id]['progress_str'] = '投稿を取得しています...'
 
-        notes: list[dict] = []
-        kwargs: dict = {}
-        with_files = False
-        mi2: Misskey = Misskey(address=data['hostname'], i=token)
-        userdata_block = mi2.users_show(user_id=data['user_id'])
-        took_time_array: list[float] = []
-
-        total_blocks = int(data['import_size'] / 100) + 1
-        for i_block in range(total_blocks):
-            t0 = time.time()
-            notes_block = mi2.users_notes(
-                data['user_id'],
-                include_replies=False,
-                include_my_renotes=False,
-                with_files=with_files,
-                limit=100,
-                **kwargs,
-            )
-            if not notes_block:
-                if not with_files:
-                    with_files = True
-                    continue
-                break
-
-            kwargs['until_id'] = notes_block[-1]['id']
-            for note in notes_block:
-                vis = note['visibility']
-                if import_visibility == 'public_only' and vis not in ('public', 'home'):
-                    continue
-                if import_visibility == 'followers' and vis == 'specified':
-                    continue
-                notes.append(note)
-
-            # progress & ETA
-            try:
-                job_status[job_id]['progress'] = 20 + ((i_block / (int(userdata_block['notesCount']) / 100)) * 60)
-            except ZeroDivisionError:
-                job_status[job_id]['progress'] = 50
-
-            if took_time_array:
-                avg = sum(took_time_array) / len(took_time_array)
-                est = avg * ((int(userdata_block['notesCount']) / 100) - i_block)
-                job_status[job_id]['progress_str'] = (
-                    '投稿を取得しています。 (残 '
-                    f"{math.floor(est/60)}分{math.floor(est%60)}秒)"
-                )
-            took_time_array.append(time.time() - t0)
-
-        # Build text list
-        lines: list[str] = []
-        for note in notes:
-            if note.get('text') and len(note['text']) > 2:
-                for l in note['text'].splitlines():
-                    lines.append(format_text(l))
+        importer = MisskeyDataImporter(session_data, token)
+        lines, imported_notes = importer.fetch_lines()
 
         job_status[job_id]['progress_str'] = 'モデルを作成しています'
         job_status[job_id]['progress'] = 80
@@ -148,7 +98,7 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
             error=None,
             progress=100,
             progress_str='完了',
-            result=f'取り込み済投稿数: {len(notes)}<br>処理時間: {(time.time() - st)*1000:.2f} ミリ秒',
+            result=f'取り込み済投稿数: {imported_notes}<br>処理時間: {(time.time() - st)*1000:.2f} ミリ秒',
         )
 
     thread = threading.Thread(
@@ -195,38 +145,8 @@ def start_mastodon_job(
         job_status[job_id]['progress'] = 20
         job_status[job_id]['progress_str'] = '投稿を取得しています。'
 
-        mstdn = mastodon_lib.Mastodon(
-            client_id=data['mstdn_app_key'],
-            client_secret=data['mstdn_app_secret'],
-            access_token=token,
-            api_base_url=f"https://{data['hostname']}",
-        )
-
-        toots: list[dict] = []
-        last_id = None
-        total_blocks = int(data['import_size'] / 40) + 1
-        for _ in range(total_blocks):
-            tmptoots = mstdn.account_statuses(account['id'], limit=40, max_id=last_id, exclude_reblogs=True)
-            if not tmptoots:
-                break
-            toots.extend(tmptoots)
-            last_id = tmptoots[-1]
-
-        job_status[job_id]['progress'] = 50
-
-        lines: list[str] = []
-        imported_toots = 0
-        for toot in toots:
-            vis = toot['visibility']
-            if import_visibility == 'public_only' and vis not in ('public', 'unlisted'):
-                continue
-            if import_visibility == 'followers' and vis == 'direct':
-                continue
-            imported_toots += 1
-            if toot['content'] and len(toot['content']) > 2:
-                for l in toot['content'].splitlines():
-                    tx = re.sub(r'<[^>]*>', '', l)
-                    lines.append(format_text(tx))
+        importer = MastodonDataImporter(session_data, token, account)
+        lines, imported_toots = importer.fetch_lines()
 
         job_status[job_id]['progress_str'] = 'モデルを作成しています'
         job_status[job_id]['progress'] = 80
