@@ -85,9 +85,9 @@ def login_callback():
         return make_response(str(e), 500)
 
     if session['type'] == 'misskey':
-        thread_id = start_misskey_job(session, info['token'])
+        thread_id = start_misskey_job(dict(session), info['token'])
     else:  # mastodon
-        thread_id = start_mastodon_job(session, info['token'], info['account'])
+        thread_id = start_mastodon_job(dict(session), info['token'], info['account'])
 
     session['logged_in'] = True
     return redirect('/job_wait?job_id=' + thread_id)
