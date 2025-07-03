@@ -104,6 +104,16 @@ app.register_blueprint(auth_bp)
 for _endpoint in ('login', 'login_msk_callback', 'logout'):
     app.view_functions.pop(_endpoint, None)
 
+# Also remove handlers replaced by blueprints
+for _endpoint in (
+    'generate_page',
+    'generate_do',
+    'my_delete_model_data',
+    'job_wait',
+    'error_test',
+):
+    app.view_functions.pop(_endpoint, None)
+
 # ランダムバイトから鍵生成
 app.secret_key = bytes(bytearray(random.getrandbits(8) for _ in range(32)))
 app.permanent_session_lifetime = timedelta(hours=1)
