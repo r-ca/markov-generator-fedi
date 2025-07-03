@@ -10,6 +10,7 @@
 
 ```py
 PORT=8888 # Webサーバーの待ち受けポート
+HOST='127.0.0.1' # WebサーバーのListenアドレス
 DEBUG=True # デバッグモードで起動するか (本番環境ではFalse推奨)
 MECAB_DICDIR='...' # MeCabで使用する辞書があるディレクトリの絶対パス
 MECAB_RC='...' # mecabrcの絶対パス
