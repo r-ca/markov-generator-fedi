@@ -8,6 +8,8 @@
         <style type="text/css">
             :root {
                 --border-radius: 8px;
+                --main-title-color: #dc3545;
+                --main-icon-color: #dc3545;
             }
             body {
                 background-color: #f8f9fa;
@@ -24,15 +26,20 @@
                 padding: 2rem 1rem;
                 text-align: center;
             }
-            h1 {
-                color: #dc3545;
-                margin-bottom: 2rem;
+            .main-title {
+                color: var(--main-title-color);
                 font-weight: 600;
+                margin-bottom: 2rem;
+                font-size: 2rem;
             }
-            .error-icon {
-                font-size: 4rem;
-                color: #dc3545;
+            .main-icon {
+                font-size: 3rem;
+                color: var(--main-icon-color);
                 margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
             }
             .alert-danger {
                 border-radius: var(--border-radius);
@@ -71,10 +78,10 @@
     </head>
     <body>
         <div class="centered-content">
-            <div class="error-icon">
+            <div class="main-icon">
                 <i class="bi bi-exclamation-triangle-fill"></i>
             </div>
-            <h1>エラー</h1>
+            <div class="main-title">エラー</div>
             <div class="alert alert-danger">
                 {% autoescape False %}
                     {{ message }}

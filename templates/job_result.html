@@ -8,6 +8,8 @@
         <style type="text/css">
             :root {
                 --border-radius: 8px;
+                --main-title-color: #28a745;
+                --main-icon-color: #28a745;
             }
             body {
                 background-color: #f8f9fa;
@@ -24,15 +26,20 @@
                 padding: 2rem 1rem;
                 text-align: center;
             }
-            h1 {
-                color: #28a745;
-                margin-bottom: 2rem;
+            .main-title {
+                color: var(--main-title-color);
                 font-weight: 600;
+                margin-bottom: 2rem;
+                font-size: 2rem;
             }
-            .success-icon {
-                font-size: 4rem;
-                color: #28a745;
+            .main-icon {
+                font-size: 3rem;
+                color: var(--main-icon-color);
                 margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
             }
             .result-content {
                 background-color: #f8f9fa;
@@ -69,10 +76,10 @@
     </head>
     <body>
         <div class="centered-content">
-            <div class="success-icon">
+            <div class="main-icon">
                 <i class="bi bi-check-circle-fill"></i>
             </div>
-            <h1>完了</h1>
+            <div class="main-title">完了</div>
             <div class="result-content">
                 {% autoescape False %}
                     {{ job['result'] }}

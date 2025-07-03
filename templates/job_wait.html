@@ -8,6 +8,8 @@
         <style type="text/css">
             :root {
                 --border-radius: 8px;
+                --main-title-color: #495057;
+                --main-icon-color: #007bff;
             }
             body {
                 background-color: #f8f9fa;
@@ -23,6 +25,21 @@
                 max-width: 600px;
                 padding: 2rem 1rem;
                 text-align: center;
+            }
+            .main-title {
+                color: var(--main-title-color);
+                font-weight: 600;
+                margin-bottom: 2rem;
+                font-size: 2rem;
+            }
+            .main-icon {
+                font-size: 3rem;
+                color: var(--main-icon-color);
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
             }
             .progress {
                 height: 12px;
@@ -40,23 +57,13 @@
                 font-size: 0.95rem;
                 margin-bottom: 1.5rem;
             }
-            .loading-icon {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 100%;
-                margin-bottom: 1.5rem;
-            }
-            .loading-icon i {
-                font-size: 3rem;
-                color: #007bff;
-                animation: spin 2s linear infinite;
-                display: inline-block;
-                vertical-align: middle;
-            }
             @keyframes spin {
                 from { transform: rotate(0deg); }
                 to { transform: rotate(360deg); }
+            }
+            .main-icon i {
+                animation: spin 2s linear infinite;
+                vertical-align: middle;
             }
             @media (max-width: 768px) {
                 .centered-content {
@@ -71,10 +78,10 @@
     </head>
     <body>
         <div class="centered-content">
-            <div class="loading-icon">
+            <div class="main-icon">
                 <i class="bi bi-gear-fill"></i>
             </div>
-            <h1>学習中です...</h1>
+            <div class="main-title">学習中です...</div>
             {% if d['progress'] == 100 %}
             <div class="progress-text">処理を完了しています</div>
             <div class="progress">

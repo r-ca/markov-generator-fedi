@@ -8,6 +8,8 @@
         <style type="text/css">
             :root {
                 --border-radius: 8px;
+                --main-title-color: #2c3e50;
+                --main-icon-color: #007bff;
                 --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
                 --primary-color: #007bff;
                 --primary-gradient: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
@@ -18,16 +20,38 @@
                 --text-muted: #6c757d;
             }
             
-            html, body {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
-            
             body {
                 background-color: var(--light-bg);
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
                 min-height: 100vh;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            }
+            
+            .centered-content {
+                width: 100%;
+                max-width: 600px;
+                padding: 2rem 1rem;
+                text-align: center;
+            }
+            
+            .main-title {
+                color: var(--main-title-color);
+                font-weight: 600;
+                margin-bottom: 2rem;
+                font-size: 2rem;
+            }
+            
+            .main-icon {
+                font-size: 2.2rem;
+                color: var(--main-icon-color);
+                margin-bottom: 1.2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
             }
             
             .page-container {
@@ -41,6 +65,28 @@
             .content-wrapper {
                 width: 100%;
                 max-width: 600px;
+            }
+            
+            .settings-section, .result-section {
+                background: white;
+                padding: 2rem;
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow);
+                margin-bottom: 1.5rem;
+            }
+            
+            .settings-title, .result-title {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #495057;
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .btn {
+                border-radius: var(--border-radius) !important;
             }
             
             .breadcrumb {
@@ -57,29 +103,6 @@
             
             .breadcrumb a:hover {
                 color: var(--primary-color);
-            }
-            
-            .page-title {
-                margin-bottom: 2rem;
-                color: #2c3e50;
-                font-weight: 600;
-            }
-            
-            .settings-section {
-                background: white;
-                padding: 2rem;
-                border-radius: var(--border-radius);
-                margin-bottom: 1.5rem;
-            }
-            
-            .settings-title {
-                font-size: 1.2rem;
-                font-weight: 600;
-                color: #495057;
-                margin-bottom: 1.5rem;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
             }
             
             .form-row {
@@ -121,21 +144,6 @@
                 margin-top: 0.25rem;
             }
             
-            .btn {
-                border: none;
-                border-radius: var(--border-radius) !important;
-                padding: 0.75rem 1.5rem;
-                font-weight: 500;
-                font-size: 0.95rem;
-                transition: all 0.15s ease-in-out;
-                cursor: pointer;
-                text-decoration: none;
-                display: inline-flex;
-                align-items: center;
-                gap: 0.5rem;
-                justify-content: center;
-            }
-            
             .btn-primary {
                 background: var(--primary-gradient);
                 color: white;
@@ -173,22 +181,6 @@
             .generate-btn {
                 width: 100%;
                 margin-top: 1rem;
-            }
-            
-            .result-section {
-                background: white;
-                border-radius: var(--border-radius);
-                padding: 2rem;
-            }
-            
-            .result-title {
-                font-size: 1.2rem;
-                font-weight: 600;
-                color: #495057;
-                margin-bottom: 1.5rem;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
             }
             
             .generated-text {
@@ -262,30 +254,22 @@
             
             /* Mobile responsive */
             @media (max-width: 768px) {
-                .page-container {
-                    padding: 1rem;
-                    align-items: flex-start;
-                    padding-top: 2rem;
+                .centered-content, .content-wrapper {
+                    padding: 1rem 0.5rem;
                 }
-                
-                .settings-section,
-                .result-section {
-                    padding: 1.5rem;
+                body {
+                    padding: 0.5rem;
                 }
-                
                 .form-row {
                     grid-template-columns: 1fr;
                 }
-                
                 .action-buttons {
                     flex-direction: column;
                     align-items: stretch;
                 }
-                
                 .action-buttons .btn {
                     width: 100%;
                 }
-                
                 .processing-time {
                     margin-left: 0;
                     justify-content: center;
@@ -344,7 +328,7 @@
                     <span class="text-muted">文章生成</span>
                 </nav>
 
-                <h1 class="page-title">文章生成</h1>
+                <h1 class="main-title">文章生成</h1>
 
                 {% if internal_error %}
                 <div class="alert alert-danger">
