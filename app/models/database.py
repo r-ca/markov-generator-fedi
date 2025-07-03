@@ -35,6 +35,7 @@ def get_db():
 
 def get_db_connection():
     """Get a thread-safe database connection."""
+    global db
     with _db_lock:
         try:
             # 接続が有効かチェック
@@ -42,7 +43,6 @@ def get_db_connection():
             return db
         except (sqlite3.OperationalError, sqlite3.InterfaceError):
             # 接続が無効な場合は再接続
-            global db
             try:
                 db.close()
             except:
