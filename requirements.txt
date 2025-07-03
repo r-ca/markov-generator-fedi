@@ -7,3 +7,4 @@ Mastodon.py
 python-Levenshtein
 sentry-sdk[flask]
 gunicorn
+psutil

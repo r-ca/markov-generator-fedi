@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import gc
 from typing import List, Tuple
 
 import mastodon as mastodon_lib
@@ -24,23 +25,30 @@ class MastodonDataImporter(DataImporter):
         )
 
     def fetch_lines(self) -> Tuple[List[str], int]:
-        toots: List[dict] = []
+        lines: List[str] = []
+        imported = 0
         last_id = None
+        
         for _ in range(int(self.session_data['import_size'] / 40) + 1):
             block = self.mstdn.account_statuses(self.account['id'], limit=40, max_id=last_id, exclude_reblogs=True)
             if not block:
                 break
-            toots.extend(block)
+            
+            # 各ブロックを即座に処理してメモリを解放
+            for toot in block:
+                if not self._format_visibility_filter(toot['visibility']):
+                    continue
+                
+                if toot['content'] and len(toot['content']) > 2:
+                    for l in toot['content'].splitlines():
+                        tx = re.sub(r'<[^>]*>', '', l)
+                        lines.append(format_text(tx))
+                    imported += 1
+            
             last_id = block[-1]
-
-        lines: List[str] = []
-        imported = 0
-        for toot in toots:
-            if not self._format_visibility_filter(toot['visibility']):
-                continue
-            imported += 1
-            if toot['content'] and len(toot['content']) > 2:
-                for l in toot['content'].splitlines():
-                    tx = re.sub(r'<[^>]*>', '', l)
-                    lines.append(format_text(tx))
+            
+            # ブロック処理後にメモリを解放
+            del block
+            gc.collect()
+            
         return lines, imported 
