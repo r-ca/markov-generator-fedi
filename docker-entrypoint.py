@@ -31,4 +31,4 @@ else:
 os.environ['DB_PATH'] = db_path
 
 # 新しいエントリポイントを実行
-runpy.run_module('boot.run', run_name='__main__')
+runpy.run_module('app.run', run_name='__main__')
