@@ -1,0 +1,12 @@
+services:
+  markov-generator-fedi:
+    build: .
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./markov_data:/app/data
+      # - ./config.py:/app/config.py:ro
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=false
+    restart: unless-stopped
