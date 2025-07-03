@@ -12,29 +12,31 @@ from misskey.exceptions import *
 import random
 from datetime import timedelta
 import urllib.parse
-import sqlite3
 import re
-import MeCab
 import markovify
 import config
 import requests
 import uuid
 import hashlib
-import re
 import threading
 import time
 import Levenshtein as levsh
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 
+# Local modules (refactored)
+from utils.helpers import format_bytes, dict_factory, format_text
+from models.database import db
+from models.markov_model import create_markov_model_by_multiline
+
+# Original utility function moved to utils.helpers; keeping stub for backward compatibility
+
+# NOTE: The actual implementation is now provided by utils.helpers.
+# These stubs simply proxy to the refactored versions to avoid code churn further below.
+
 def format_bytes(size):
-    power = 2 ** 10  # 2**10 = 1024
-    n = 0
-    power_labels = ['B', 'KB', 'MB', 'GB', 'TB']
-    while size > power and n <= len(power_labels):
-        size /= power
-        n += 1
-    return '{:.0f} {}'.format(size, power_labels[n])
+    from utils.helpers import format_bytes as _impl
+    return _impl(size)
 
 def proc_error_hook(args):
     print(''.join(traceback.format_exception(args.exc_type, args.exc_value, args.exc_traceback)))
@@ -45,65 +47,25 @@ def proc_error_hook(args):
 
 threading.excepthook = proc_error_hook
 
+# dict_factory has moved to utils.helpers
+
 def dict_factory(cursor, row):
-   d = {}
-   for idx, col in enumerate(cursor.description):
-       d[col[0]] = row[idx]
-   return d
+    from utils.helpers import dict_factory as _impl
+    return _impl(cursor, row)
+
+# format_text moved to utils.helpers
 
 def format_text(t):
-    t = t.replace('　', ' ')  # Full width spaces
-    # t = re.sub(r'([。．！？…]+)', r'\1\n', t)  # \n after ！？
-    t = re.sub(r'(.+。) (.+。)', r'\1 \2\n', t)
-    t = re.sub(r'\n +', '\n', t)  # Spaces
-    t = re.sub(r'([。．！？…])\n」', r'\1」 \n', t)  # \n before 」
-    t = re.sub(r'\n +', '\n', t)  # Spaces
-    t = re.sub(r'\n+', r'\n', t).rstrip('\n')  # Empty lines
-    t = re.sub(r'\n +', '\n', t)  # Spaces
-    t = re.sub(r'(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?', '', t) # URL
-    return t
+    from utils.helpers import format_text as _impl
+    return _impl(t)
 
-def create_markov_model_by_multiline(lines: list):
-    # MeCabで形態素解析
-    parsed_text = []
-    mecab_options = ['-Owakati']
-    
-    # 環境変数を優先、config.pyはフォールバック
-    mecab_dicdir = os.environ.get('MECAB_DICDIR')
-    if not mecab_dicdir:
-        try:
-            mecab_dicdir = getattr(config, 'MECAB_DICDIR', None)
-        except:
-            pass
-    
-    if mecab_dicdir:
-        mecab_options.append(f'-d{mecab_dicdir}')
-    
-    mecab_rc = os.environ.get('MECAB_RC')
-    if not mecab_rc:
-        try:
-            mecab_rc = getattr(config, 'MECAB_RC', None)
-        except:
-            pass
-    
-    if mecab_rc:
-        mecab_options.append(f'-r{mecab_rc}')
-    
-    for line in lines:
-        parsed_text.append(MeCab.Tagger(' '.join(mecab_options)).parse(line))
-    
-    # モデル作成
-    try:
-        text_model = markovify.NewlineText('\n'.join(parsed_text), state_size=2)
-    except:
-        raise Exception('<meta name="viewport" content="width=device-width">モデル作成に失敗しました。学習に必要な投稿数が不足している可能性があります。', 500)
+# create_markov_model_by_multiline moved to models.markov_model
 
-    return text_model
+def create_markov_model_by_multiline(lines):
+    from models.markov_model import create_markov_model_by_multiline as _impl
+    return _impl(lines)
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Markov-Generator-Fedi) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-
-db = sqlite3.connect(os.environ.get('DB_PATH', 'markov.db'), check_same_thread=False)
-db.row_factory = dict_factory
 
 # job_statusの使い方
 # {
