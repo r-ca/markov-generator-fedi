@@ -10,12 +10,12 @@ from typing import Dict, Any
 
 import mastodon as mastodon_lib  # rename to avoid name clash
 from misskey import Misskey
-from services.job_manager import job_status
-from utils.helpers import format_text
-from models.markov_model import create_markov_model_by_multiline
-from models.database import db
-from services.data_import.misskey import MisskeyDataImporter
-from services.data_import.mastodon import MastodonDataImporter
+from app.services.job_manager import job_status
+from app.utils.helpers import format_text
+from app.models.markov_model import create_markov_model_by_multiline
+from app.models.database import db
+from app.services.data_import.misskey import MisskeyDataImporter
+from app.services.data_import.mastodon import MastodonDataImporter
 
 __all__ = [
     'start_misskey_job',

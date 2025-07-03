@@ -6,7 +6,7 @@ import requests
 import mastodon as mastodon_lib
 from flask import session
 
-from services.http_client import USER_AGENT
+from app.services.http_client import USER_AGENT
 from .base import AuthProvider, register_provider
 
 

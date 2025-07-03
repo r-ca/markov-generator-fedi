@@ -9,7 +9,7 @@ from misskey.exceptions import MisskeyMiAuthFailedException
 
 from flask import session
 
-from services.http_client import USER_AGENT
+from app.services.http_client import USER_AGENT
 from .base import AuthProvider, register_provider
 
 

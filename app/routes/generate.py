@@ -10,9 +10,9 @@ from flask import Blueprint, render_template, request, session, make_response
 import markovify
 import Levenshtein as levsh
 
-from utils.helpers import format_text, format_bytes
-from models.database import db
-from services.http_client import USER_AGENT
+from app.utils.helpers import format_text, format_bytes
+from app.models.database import db
+from app.services.http_client import USER_AGENT
 
 # Blueprint definition
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from flask import Blueprint, render_template, request, make_response, session
 
-from services.job_manager import job_status
+from app.services.job_manager import job_status
 
 job_bp = Blueprint('job', __name__)
 

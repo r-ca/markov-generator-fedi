@@ -20,10 +20,10 @@ import markovify
 import config
 
 # Local application imports
-from utils.helpers import format_bytes
-from services.http_client import session as request_session
-from services.background_processor import start_misskey_job, start_mastodon_job
-from services.auth.base import get_provider
+from app.utils.helpers import format_bytes
+from app.services.http_client import session as request_session
+from app.services.background_processor import start_misskey_job, start_mastodon_job
+from app.services.auth.base import get_provider
 
 auth_bp = Blueprint('auth', __name__)
 

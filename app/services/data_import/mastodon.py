@@ -5,7 +5,7 @@ from typing import List, Tuple
 
 import mastodon as mastodon_lib
 
-from utils.helpers import format_text
+from app.utils.helpers import format_text
 from .base import DataImporter
 
 __all__ = ['MastodonDataImporter']

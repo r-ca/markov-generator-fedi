@@ -5,9 +5,9 @@ import time
 from typing import List, Tuple
 
 from misskey import Misskey
-from utils.helpers import format_text
+from app.utils.helpers import format_text
 from .base import DataImporter
-from services.job_manager import job_status  # type: ignore
+from app.services.job_manager import job_status  # type: ignore
 
 __all__ = ['MisskeyDataImporter']
 

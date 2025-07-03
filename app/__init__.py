@@ -10,7 +10,7 @@ import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 # Local imports – routes must be imported after Flask instance is created
-from utils.helpers import format_bytes  # noqa: F401 – keep a central import
+from app.utils.helpers import format_bytes  # noqa: F401 – keep a central import
 
 
 def _init_sentry():
@@ -39,7 +39,7 @@ def create_app() -> Flask:  # noqa: D401
     app.permanent_session_lifetime = timedelta(hours=1)
 
     # Blueprint registrations (import locally to avoid circular refs)
-    from routes import main_bp, generate_bp, job_bp, auth_bp  # noqa: WPS433,E402
+    from app.routes import main_bp, generate_bp, job_bp, auth_bp  # noqa: WPS433,E402
 
     app.register_blueprint(main_bp)
     app.register_blueprint(generate_bp)
