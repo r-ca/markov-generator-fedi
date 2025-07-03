@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 import time
+import gc
 from typing import List, Tuple
 
 from misskey import Misskey
@@ -21,7 +22,7 @@ class MisskeyDataImporter(DataImporter):
     def fetch_lines(self) -> Tuple[List[str], int]:
         # NOTE: progress updating is optional; handled by background_processor
         lines: List[str] = []
-        notes: List[dict] = []
+        imported_count = 0
         kwargs = {}
         with_files = False
 
@@ -44,14 +45,19 @@ class MisskeyDataImporter(DataImporter):
                     continue
                 break
             kwargs['until_id'] = notes_block[-1]['id']
+            
+            # 各ブロックを即座に処理してメモリを解放
             for note in notes_block:
                 if not self._format_visibility_filter(note['visibility']):
                     continue
-                notes.append(note)
+                
+                if note.get('text') and len(note['text']) > 2:
+                    for l in note['text'].splitlines():
+                        lines.append(format_text(l))
+                    imported_count += 1
+            
+            # ブロック処理後にメモリを解放
+            del notes_block
+            gc.collect()
 
-        for note in notes:
-            if note.get('text') and len(note['text']) > 2:
-                for l in note['text'].splitlines():
-                    lines.append(format_text(l))
-
-        return lines, len(notes) 
+        return lines, imported_count 

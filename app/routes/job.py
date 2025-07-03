@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from flask import Blueprint, render_template, request, make_response, session
 
-from app.services.job_manager import job_status
+from app.services.job_manager import job_status, cleanup_completed_jobs
 
 job_bp = Blueprint('job', __name__)
 
@@ -16,6 +16,9 @@ def error_test():
 @job_bp.route('/job_wait')
 def job_wait():
     """Poll the status of a background job and show progress / result."""
+    # 定期的にクリーンアップを実行
+    cleanup_completed_jobs()
+    
     job_id = request.args.get('job_id')
     if not job_id:
         return make_response('<meta name="viewport" content="width=device-width">Invaild job id', 400)

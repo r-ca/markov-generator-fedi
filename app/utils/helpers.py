@@ -1,34 +1,27 @@
 import re
 import math
 import html
+import psutil
+import os
 
 __all__ = [
     'format_bytes',
     'dict_factory',
     'format_text',
+    'get_memory_usage',
 ]
 
 
-def format_bytes(size: int) -> str:
-    """Convert bytes to human-readable string (B, KB, MB, …).
-
-    Parameters
-    ----------
-    size: int
-        Size in bytes.
-
-    Returns
-    -------
-    str
-        Formatted string such as "10 KB".
-    """
-    power = 2 ** 10  # 1024
-    n = 0
-    power_labels = ['B', 'KB', 'MB', 'GB', 'TB']
-    while size > power and n < len(power_labels) - 1:
-        size /= power
-        n += 1
-    return '{:.0f} {}'.format(size, power_labels[n])
+def format_bytes(bytes_value: int) -> str:
+    """Format bytes into human readable string."""
+    if bytes_value == 0:
+        return "0 B"
+    size_names = ["B", "KB", "MB", "GB", "TB"]
+    i = 0
+    while bytes_value >= 1024 and i < len(size_names) - 1:
+        bytes_value /= 1024.0
+        i += 1
+    return f"{bytes_value:.1f} {size_names[i]}"
 
 
 def dict_factory(cursor, row):
@@ -37,6 +30,20 @@ def dict_factory(cursor, row):
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
     return d
+
+
+def get_memory_usage() -> dict:
+    """Get current memory usage information."""
+    process = psutil.Process(os.getpid())
+    memory_info = process.memory_info()
+    
+    return {
+        'rss': format_bytes(memory_info.rss),  # Resident Set Size
+        'vms': format_bytes(memory_info.vms),  # Virtual Memory Size
+        'percent': process.memory_percent(),
+        'available': format_bytes(psutil.virtual_memory().available),
+        'total': format_bytes(psutil.virtual_memory().total),
+    }
 
 
 def format_text(text: str) -> str:
