@@ -63,7 +63,7 @@
                 gap: 1rem;
                 flex-wrap: wrap;
             }
-            .generate-btn {
+            .primary-action-btn {
                 font-size: 1.1rem;
                 padding: 0.75rem 2rem;
                 border-radius: var(--border-radius);
@@ -128,11 +128,11 @@
             </div>
             {% else %}
             <div class="text-center mb-4">
-                <a href="javascript:void(0)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">ログインして学習</a>
+                <a href="javascript:void(0)" class="btn btn-primary primary-action-btn" data-bs-toggle="modal" data-bs-target="#loginModal">ログインして学習</a>
             </div>
             {% endif %}
             <div class="text-center">
-                <a href="/generate" class="btn btn-success generate-btn">文章生成</a>
+                <a href="/generate" class="btn btn-success primary-action-btn">文章生成</a>
             </div>
         </div>
 
