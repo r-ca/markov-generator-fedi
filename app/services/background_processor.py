@@ -14,7 +14,7 @@ from misskey import Misskey
 from app.services.job_manager import job_status, cleanup_completed_jobs
 from app.utils.helpers import format_text, get_memory_usage
 from app.models.markov_model import create_markov_model_by_multiline
-from app.models.database import get_db_connection
+from app.models.database import db
 from app.services.data_import.misskey import MisskeyDataImporter
 from app.services.data_import.mastodon import MastodonDataImporter
 
@@ -111,7 +111,6 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
         job_status[job_id]['progress'] = 90
 
         try:
-            db = get_db_connection()
             cur = db.cursor()
             cur.execute('DELETE FROM model_data WHERE acct = ?', (data['acct'],))
             cur.execute(
@@ -120,12 +119,11 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
             )
             cur.close()
             db.commit()
-        except Exception as e:
-            print(f"[ERROR] Database error in misskey job: {e}")
+        except Exception:
             traceback.print_exc()
             job_status[job_id] = dict(
                 completed=True, 
-                error='Failed to save model: ' + str(e),
+                error='Failed to save model',
                 completed_at=time.time()
             )
             return
@@ -231,7 +229,6 @@ def start_mastodon_job(
         job_status[job_id]['progress'] = 90
 
         try:
-            db = get_db_connection()
             cur = db.cursor()
             cur.execute('DELETE FROM model_data WHERE acct = ?', (data['acct'],))
             cur.execute(
@@ -240,12 +237,11 @@ def start_mastodon_job(
             )
             cur.close()
             db.commit()
-        except Exception as e:
-            print(f"[ERROR] Database error in mastodon job: {e}")
+        except Exception:
             traceback.print_exc()
             job_status[job_id] = dict(
                 completed=True, 
-                error='Failed to save model to database: ' + str(e),
+                error='Failed to save model to database',
                 completed_at=time.time()
             )
             return
