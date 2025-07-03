@@ -43,8 +43,8 @@ def login():
     except ValueError:
         return make_response('import_size is invalid', 400)
 
-    if import_size < 1000 or import_size > 20000:
-        return make_response('import_size must be between 1000 and 20000', 400)
+    if import_size < 1000 or import_size > 1000000:
+        return make_response('import_size must be between 1000 and 1000000', 400)
 
     # generic session
     session.clear()
