@@ -717,6 +717,7 @@ def logout():
 
 
 PORT = 8888
+HOST = 127.0.0.1
 DEBUG = True
 
 try:
@@ -729,5 +730,10 @@ try:
 except AttributeError:
     pass
 
+try:
+    HOST = config.HOST
+except AttributeError:
+    pass
+
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=PORT, debug=DEBUG, threaded=True)
+    app.run(host=HOST, port=PORT, debug=DEBUG, threaded=True)
