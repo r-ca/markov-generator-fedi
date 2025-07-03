@@ -95,10 +95,11 @@ except AttributeError:
 
 app = Flask(__name__)
 # Register blueprints
-from routes import generate_bp, job_bp, auth_bp
+from routes import generate_bp, job_bp, auth_bp, main_bp
 app.register_blueprint(generate_bp)
 app.register_blueprint(job_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(main_bp)
 
 # Deregister old route handlers that moved to blueprints to avoid duplicates
 for _endpoint in ('login', 'login_msk_callback', 'logout'):
@@ -111,6 +112,8 @@ for _endpoint in (
     'my_delete_model_data',
     'job_wait',
     'error_test',
+    'root',
+    'privacy_page',
 ):
     app.view_functions.pop(_endpoint, None)
 
