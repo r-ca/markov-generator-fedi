@@ -95,9 +95,14 @@ except AttributeError:
 
 app = Flask(__name__)
 # Register blueprints
-from routes import generate_bp, job_bp
+from routes import generate_bp, job_bp, auth_bp
 app.register_blueprint(generate_bp)
 app.register_blueprint(job_bp)
+app.register_blueprint(auth_bp)
+
+# Deregister old route handlers that moved to blueprints to avoid duplicates
+for _endpoint in ('login', 'login_msk_callback', 'logout'):
+    app.view_functions.pop(_endpoint, None)
 
 # ランダムバイトから鍵生成
 app.secret_key = bytes(bytearray(random.getrandbits(8) for _ in range(32)))
