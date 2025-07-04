@@ -43,6 +43,18 @@
       "iconUrl": "https://github.com/nexryai.png",
       "github": "https://github.com/nexryai",
       "description": "テスト & フィードバック"
+    },
+    {
+      "displayName": "Claude",
+      "iconUrl": "https://github.com/claude.png",
+      "github": "https://github.com/claude",
+      "description": "ファイル分割, コーディングアシスタント"
+    },
+    {
+      "displayName": "Gemini",
+      "iconUrl": "https://github.com/gemini-code-assistant.png",
+      "github": "https://github.com/gemini-code-assistant",
+      "description": "コーディングアシスタント"
     }
   ]
 } 
