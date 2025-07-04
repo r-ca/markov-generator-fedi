@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import math
-import time
+from datetime import datetime
+from datetime import timedelta
 import uuid
 import threading
 import traceback
@@ -70,9 +71,9 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
     allow_by_other = session_data.get('allowGenerateByOther', False)
 
     def proc(job_id: str, data: Dict[str, Any]):  # noqa: C901 – legacy complexity
-        st = time.time()
+        st = datetime.now()
         _log_memory_usage("START", job_id)
-        
+
         job_status[job_id]['progress'] = 10
         job_status[job_id]['progress_str'] = '投稿を取得しています...'
 
@@ -82,9 +83,9 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
             _log_memory_usage("AFTER_FETCH", job_id)
         except Exception as e:
             job_status[job_id] = dict(
-                completed=True, 
+                completed=True,
                 error=str(e),
-                completed_at=time.time()
+                completed_at=datetime.now()
             )
             return
 
@@ -97,9 +98,9 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
             _log_memory_usage("AFTER_MODEL_CREATION", job_id)
         except Exception as e:
             job_status[job_id] = dict(
-                completed=True, 
+                completed=True,
                 error=str(e),
-                completed_at=time.time()
+                completed_at=datetime.now()
             )
             return
         finally:
@@ -125,9 +126,9 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
             print(f"[ERROR] Database error in misskey job: {e}")
             traceback.print_exc()
             job_status[job_id] = dict(
-                completed=True, 
+                completed=True,
                 error='Failed to save model: ' + str(e),
-                completed_at=time.time()
+                completed_at=datetime.now()
             )
             return
         finally:
@@ -141,10 +142,10 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
             error=None,
             progress=100,
             progress_str='完了',
-            result=f'学習完了！<br>取り込み済投稿数: {imported_notes}件<br>処理時間: {(time.time() - st)*1000:.2f} ミリ秒',
-            completed_at=time.time(),
+            result=f'学習完了！<br>取り込み済投稿数: {imported_notes}件<br>処理時間: {format_time(datetime.now() - st)}',
+            completed_at=datetime.now(),
         )
-        
+
         _log_memory_usage("COMPLETED", job_id)
 
     thread = threading.Thread(
@@ -162,10 +163,10 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
     )
     thread.start()
     job_status[thread_id]['thread'] = thread
-    
+
     # 定期的にクリーンアップを実行
     cleanup_completed_jobs()
-    
+
     return thread_id
 
 
@@ -191,9 +192,9 @@ def start_mastodon_job(
     allow_by_other = session_data.get('allowGenerateByOther', False)
 
     def proc(job_id: str, data: Dict[str, Any]):  # noqa: C901 – legacy complexity
-        st = time.time()
+        st = datetime.now()
         _log_memory_usage("START", job_id)
-        
+
         job_status[job_id]['progress'] = 10
         job_status[job_id]['progress_str'] = '投稿を取得しています...'
 
@@ -203,9 +204,9 @@ def start_mastodon_job(
             _log_memory_usage("AFTER_FETCH", job_id)
         except Exception as e:
             job_status[job_id] = dict(
-                completed=True, 
+                completed=True,
                 error='Failed to fetch data: ' + str(e),
-                completed_at=time.time()
+                completed_at=datetime.now()
             )
             return
 
@@ -218,9 +219,9 @@ def start_mastodon_job(
             _log_memory_usage("AFTER_MODEL_CREATION", job_id)
         except Exception as e:
             job_status[job_id] = dict(
-                completed=True, 
+                completed=True,
                 error='Failed to create model: ' + str(e),
-                completed_at=time.time()
+                completed_at=datetime.now()
             )
             return
         finally:
@@ -246,9 +247,9 @@ def start_mastodon_job(
             print(f"[ERROR] Database error in mastodon job: {e}")
             traceback.print_exc()
             job_status[job_id] = dict(
-                completed=True, 
+                completed=True,
                 error='Failed to save model to database: ' + str(e),
-                completed_at=time.time()
+                completed_at=datetime.now()
             )
             return
         finally:
@@ -262,10 +263,10 @@ def start_mastodon_job(
             error=None,
             progress=100,
             progress_str='完了',
-            result=f'学習完了！<br>取り込み済投稿数: {imported_toots}件<br>処理時間: {(time.time() - st)*1000:.2f} ミリ秒',
-            completed_at=time.time(),
+            result=f'学習完了！<br>取り込み済投稿数: {imported_toots}件<br>処理時間: {format_time(datetime.now() - st)}',
+            completed_at=datetime.now(),
         )
-        
+
         _log_memory_usage("COMPLETED", job_id)
 
     thread = threading.Thread(
@@ -284,8 +285,20 @@ def start_mastodon_job(
     )
     thread.start()
     job_status[thread_id]['thread'] = thread
-    
+
     # 定期的にクリーンアップを実行
     cleanup_completed_jobs()
-    
-    return thread_id 
+
+    return thread_id
+
+def format_time(delta: timedelta) -> str:
+    total_seconds = delta.total_seconds()
+    minutes = math.floor(total_seconds / 60)
+    seconds = total_seconds - minutes * 60
+
+    string = ''
+    if minutes > 0:
+        string += f'{minutes} 分 '
+    string += f'{seconds:.2f} 秒'
+
+    return string
