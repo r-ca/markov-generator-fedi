@@ -150,12 +150,6 @@ body {
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-card);
     border: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
 }
 
 /* 共通モーダルスタイル */

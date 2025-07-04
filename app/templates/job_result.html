@@ -9,12 +9,10 @@
     </div>
     <div class="job-title">完了</div>
     
-    <div class="card">
-        <div class="card-body">
-            {% autoescape False %}
-                {{ job['result'] }}
-            {% endautoescape %}
-        </div>
+    <div class="job-message">
+        {% autoescape False %}
+            {{ job['result'] }}
+        {% endautoescape %}
     </div>
     
     <div class="job-actions">
