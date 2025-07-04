@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}ジョブが見つかりません - マルコフ連鎖ジェネレーター for Fediverse{% endblock %}
+
+{% block content %}
+<div class="job-content">
+    <div class="job-icon warning">
+        <i class="bi bi-question-circle-fill"></i>
+    </div>
+    <div class="job-title">ジョブが見つかりません</div>
+    
+    <div class="alert alert-warning">
+        <strong>ジョブIDが見つかりませんでした。</strong>
+    </div>
+    
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        <strong>ヒント:</strong> すでに学習が終了している可能性があります。
+    </div>
+    
+    <div class="job-actions">
+        <a href="/generate" class="btn btn-success btn-lg me-3">
+            <i class="bi bi-magic me-2"></i>生成画面へ
+        </a>
+        <a href="/" class="btn btn-primary btn-lg">
+            <i class="bi bi-house-fill me-2"></i>トップページに戻る
+        </a>
+    </div>
+</div>
+{% endblock %} 

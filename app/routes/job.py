@@ -24,7 +24,7 @@ def job_wait():
         return make_response('<meta name="viewport" content="width=device-width">Invaild job id', 400)
 
     if job_id not in job_status:
-        return make_response('<meta name="viewport" content="width=device-width">No such job', 400)
+        return render_template('job_not_found.html', page_type='job')
 
     # Thread may have crashed
     job_info = job_status[job_id]

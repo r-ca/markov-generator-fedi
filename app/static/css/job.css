@@ -39,6 +39,10 @@ body.job {
     color: var(--warning-color);
 }
 
+.job-icon.warning {
+    color: var(--warning-color);
+}
+
 /* ジョブタイトル */
 .job-title {
     color: var(--main-title-color);
