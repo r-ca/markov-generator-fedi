@@ -19,12 +19,16 @@ def job_wait():
     # 定期的にクリーンアップを実行
     cleanup_completed_jobs()
     
-    job_id = request.args.get('job_id')
+    job_id = "";
+    try:
+        job_id = request.args.get('job_id')
+    except Exception as e:
+        return make_response(render_template('job_error.html', page_type='job', message=f'ジョブIDの取得に失敗しました\n{str(e)}'), 500)
     if not job_id:
-        return make_response('<meta name="viewport" content="width=device-width">Invaild job id', 400)
+        return make_response(render_template('job_error.html', page_type='job', message='ジョブIDが指定されていません'), 400)
 
     if job_id not in job_status:
-        return make_response('<meta name="viewport" content="width=device-width">No such job', 400)
+        return render_template('job_not_found.html', page_type='job')
 
     # Thread may have crashed
     job_info = job_status[job_id]

@@ -39,6 +39,10 @@ body.job {
     color: var(--warning-color);
 }
 
+.job-icon.warning {
+    color: var(--warning-color);
+}
+
 /* ジョブタイトル */
 .job-title {
     color: var(--main-title-color);
@@ -60,6 +64,10 @@ body.job {
     font-size: var(--font-size-lg);
     margin-bottom: var(--spacing-lg);
     line-height: 1.6;
+    padding: var(--spacing-lg);
+    background: var(--light-bg);
+    border-radius: var(--border-radius);
+    word-wrap: break-word;
 }
 
 /* ジョブアクション */
@@ -68,7 +76,33 @@ body.job {
 }
 
 .job-actions .btn {
+    min-width: 200px;
     margin: 0 var(--spacing-sm);
+}
+
+/* ボタンのグラデーション適用 */
+.job-actions .btn-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: var(--white);
+}
+
+.job-actions .btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+    color: var(--white);
+}
+
+.job-actions .btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    color: var(--white);
+}
+
+.job-actions .btn-success:hover {
+    background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+    color: var(--white);
 }
 
 /* レスポンシブ対応 */
@@ -89,5 +123,6 @@ body.job {
         display: block;
         width: 100%;
         margin: var(--spacing-sm) 0;
+        min-width: auto;
     }
 } 
