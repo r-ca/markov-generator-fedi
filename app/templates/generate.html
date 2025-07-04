@@ -1,15 +1,17 @@
-{% extends "base.html" %}
+{% extends "base_feature.html" %}
 
-{% block title %}文章生成 - マルコフ連鎖ジェネレーター for Fediverse{% endblock %}
-
-{% block ogp_title %}文章生成 - マルコフ連鎖ジェネレーター for Fediverse{% endblock %}
-{% block ogp_description %}
+{% block page_title %}文章生成{% endblock %}
+{% block page_title_ogp %}文章生成{% endblock %}
+{% block page_description %}
 {% if not request.args.get('preset') %}
 あなたのMisskey/Mastodonアカウントの投稿を学習して文章を生成します
 {% else %}
 {{ request.args.get('preset') }}さんの学習データで文章を作ってみよう！
 {% endif %}
 {% endblock %}
+
+{% block breadcrumb_current %}文章生成{% endblock %}
+{% block page_title_content %}文章生成{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -90,7 +92,7 @@
             gap: var(--spacing-lg);
             align-items: flex-start;
         }
-        .settings-section, .result-section {
+        .section-card {
             flex: 1;
             margin-bottom: 0;
         }
@@ -98,123 +100,111 @@
 </style>
 {% endblock %}
 
-{% block content %}
-<div class="page-container">
-    <div class="content-wrapper">
-        <nav class="breadcrumb">
-            <a href="/">ホーム</a>
-            <span class="text-muted mx-2">›</span>
-            <span class="text-muted">文章生成</span>
-        </nav>
+{% block feature_content %}
+{% if internal_error %}
+<div class="alert alert-danger">
+    {% autoescape False %}
+        {{ internal_error_message }}
+    {% endautoescape %}
+</div>
+{% endif %}
 
-        <h1 class="main-title">文章生成</h1>
-
-        {% if internal_error %}
-        <div class="alert alert-danger">
-            {% autoescape False %}
-                {{ internal_error_message }}
-            {% endautoescape %}
+<div class="main-layout">
+    <div class="section-card">
+        <div class="section-title">
+            <i class="bi bi-gear"></i>
+            設定
         </div>
-        {% endif %}
-
-        <div class="main-layout">
-            <div class="settings-section">
-                <div class="settings-title">
-                    <i class="bi bi-gear"></i>
-                    設定
-                </div>
-                
-                <form action="/generate/do" method="GET">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="input_acct" class="form-label">アカウント名</label>
-                            <input id="input_acct" type="text" name="acct" class="form-control" placeholder="username@host" value="{{ acct or request.args.get('preset', '') }}">
-                            {% if session.get('logged_in') %}
-                            <div class="form-text">ユーザー名に何も指定しないときは現在ログインしているアカウントの学習データを使用します</div>
-                            {% endif %}
-                        </div>
-                        <div class="form-group">
-                            <label for="input_min_words" class="form-label">最低単語数</label>
-                            <input id="input_min_words" type="number" name="min_words" class="form-control" placeholder="最低単語数(任意)" min="1" max="50" value="{{ min_words or request.args.get('min_words', '') }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="input_startswith" class="form-label">開始単語</label>
-                            <input id="input_startswith" type="text" name="startswith" class="form-control" placeholder="開始単語(任意)" maxlength="10" value="{{ startswith or request.args.get('startswith', '') }}">
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary btn-lg generate-btn">
-                        <i class="bi bi-magic"></i>
-                        生成
-                    </button>
-                </form>
-            </div>
-
-            {% if text or failed %}
-            <div class="result-section">
-                <div class="result-title">
-                    <i class="bi bi-chat-text"></i>
-                    生成された文章
-                </div>
-                {% if not failed %}
-                <div class="generated-text">
-                    {{ text }}
-                </div>
-                {% else %}
-                <div class="error-message">
-                    {% if not sw_failed %}
-                        文章を生成できませんでした。最低単語数を減らしたり、開始文字列を変えてみてください。(何回か繰り返すと生成できることもあります)
-                    {% else %}
-                        指定された単語で始まる文章を生成できませんでした。他の単語に変えてみてください。<br>
-                        <small class="text-muted">例: 「ウマ娘」ではなく「ウマ」にすると生成できることがあります。</small>
-                        {% if sw_suggest %}
-                        <div class="alert alert-warning mt-2" role="alert">
-                            近いものとして {{ sw_suggest }} で始まる文章があります。
-                        </div>
-                        {% endif %}
+        
+        <form action="/generate/do" method="GET">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="input_acct" class="form-label">アカウント名</label>
+                    <input id="input_acct" type="text" name="acct" class="form-control" placeholder="username@host" value="{{ acct or request.args.get('preset', '') }}">
+                    {% if session.get('logged_in') %}
+                    <div class="form-text">ユーザー名に何も指定しないときは現在ログインしているアカウントの学習データを使用します</div>
                     {% endif %}
                 </div>
-                {% endif %}
-                
-                <div class="action-buttons">
-                    <button id="copyButton" class="btn btn-primary" data-bs-trigger="manual" data-toggle="tooltip" data-bs-placement="bottom" title="コピーしました" {{ 'disabled' if failed }}>
-                        <i class="bi bi-clipboard"></i>
-                        クリップボードにコピー
-                    </button>
-                    <button class="btn btn-outline-primary" data-toggle="tooltip" data-bs-trigger="hover focus" data-bs-placement="bottom" title="文章を再生成します" onclick="location.reload();">
-                        <i class="bi bi-arrow-clockwise"></i>
-                        再生成
-                    </button>
-                    <div class="processing-time">
-                        <i class="bi bi-clock"></i>
-                        {{ '{0:.2f}'.format(proc_time) }}ms
-                    </div>
+                <div class="form-group">
+                    <label for="input_min_words" class="form-label">最低単語数</label>
+                    <input id="input_min_words" type="number" name="min_words" class="form-control" placeholder="最低単語数(任意)" min="1" max="50" value="{{ min_words or request.args.get('min_words', '') }}">
                 </div>
-                
-                {% if not failed %}
-                <div class="details-section">
-                    <details id="detail">
-                        <summary class="details-summary">
-                            <i class="bi bi-info-circle"></i>
-                            詳細情報
-                        </summary>
-                        <div class="details-content">
-                            <h6>生成過程</h6>
-                            <p>
-                                {% autoescape False %}
-                                {{ '&nbsp;→&nbsp;'.join(splited_text) }}
-                                {% endautoescape %}
-                            </p>
-                            <h6>学習データサイズ</h6>
-                            <p>{{ model_data_size }}</p>
-                        </div>
-                    </details>
+                <div class="form-group">
+                    <label for="input_startswith" class="form-label">開始単語</label>
+                    <input id="input_startswith" type="text" name="startswith" class="form-control" placeholder="開始単語(任意)" maxlength="10" value="{{ startswith or request.args.get('startswith', '') }}">
                 </div>
-                {% endif %}
             </div>
+            
+            <button type="submit" class="btn btn-primary btn-lg generate-btn">
+                <i class="bi bi-magic"></i>
+                生成
+            </button>
+        </form>
+    </div>
+
+    {% if text or failed %}
+    <div class="section-card">
+        <div class="section-title">
+            <i class="bi bi-chat-text"></i>
+            生成された文章
+        </div>
+        {% if not failed %}
+        <div class="generated-text">
+            {{ text }}
+        </div>
+        {% else %}
+        <div class="error-message">
+            {% if not sw_failed %}
+                文章を生成できませんでした。最低単語数を減らしたり、開始文字列を変えてみてください。(何回か繰り返すと生成できることもあります)
+            {% else %}
+                指定された単語で始まる文章を生成できませんでした。他の単語に変えてみてください。<br>
+                <small class="text-muted">例: 「ウマ娘」ではなく「ウマ」にすると生成できることがあります。</small>
+                {% if sw_suggest %}
+                <div class="alert alert-warning mt-2" role="alert">
+                    近いものとして {{ sw_suggest }} で始まる文章があります。
+                </div>
+                {% endif %}
             {% endif %}
         </div>
+        {% endif %}
+        
+        <div class="action-buttons">
+            <button id="copyButton" class="btn btn-primary" data-bs-trigger="manual" data-toggle="tooltip" data-bs-placement="bottom" title="コピーしました" {{ 'disabled' if failed }}>
+                <i class="bi bi-clipboard"></i>
+                クリップボードにコピー
+            </button>
+            <button class="btn btn-outline-primary" data-toggle="tooltip" data-bs-trigger="hover focus" data-bs-placement="bottom" title="文章を再生成します" onclick="location.reload();">
+                <i class="bi bi-arrow-clockwise"></i>
+                再生成
+            </button>
+            <div class="processing-time">
+                <i class="bi bi-clock"></i>
+                {{ '{0:.2f}'.format(proc_time) }}ms
+            </div>
+        </div>
+        
+        {% if not failed %}
+        <div class="details-section">
+            <details id="detail">
+                <summary class="details-summary">
+                    <i class="bi bi-info-circle"></i>
+                    詳細情報
+                </summary>
+                <div class="details-content">
+                    <h6>生成過程</h6>
+                    <p>
+                        {% autoescape False %}
+                        {{ '&nbsp;→&nbsp;'.join(splited_text) }}
+                        {% endautoescape %}
+                    </p>
+                    <h6>学習データサイズ</h6>
+                    <p>{{ model_data_size }}</p>
+                </div>
+            </details>
+        </div>
+        {% endif %}
     </div>
+    {% endif %}
 </div>
 {% endblock %}
 

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}{% block page_title %}{% endblock %} - マルコフ連鎖ジェネレーター for Fediverse{% endblock %}
+
+{% block ogp_title %}{% block page_title_ogp %}{% endblock %} - マルコフ連鎖ジェネレーター for Fediverse{% endblock %}
+{% block ogp_description %}{% block page_description %}{% endblock %}{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="content-wrapper">
+        <nav class="breadcrumb">
+            <a href="/">ホーム</a>
+            <span class="text-muted mx-2">›</span>
+            <span class="text-muted">{% block breadcrumb_current %}{% endblock %}</span>
+        </nav>
+
+        <h1 class="main-title">{% block page_title_content %}{% endblock %}</h1>
+        {% block page_description_content %}{% endblock %}
+
+        {% block feature_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %} 
