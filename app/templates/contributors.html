@@ -1,11 +1,11 @@
 {% extends "base_feature.html" %}
 
-{% block page_title %}コントリビューター{% endblock %}
-{% block page_title_ogp %}コントリビューター{% endblock %}
+{% block page_title %}Contributers{% endblock %}
+{% block page_title_ogp %}Contributers{% endblock %}
 {% block page_description %}このプロジェクトに貢献してくださった方々をご紹介します{% endblock %}
 
-{% block breadcrumb_current %}コントリビューター{% endblock %}
-{% block page_title_content %}コントリビューター{% endblock %}
+{% block breadcrumb_current %}Contributers{% endblock %}
+{% block page_title_content %}Contributers{% endblock %}
 {% block page_description_content %}
 <p class="lead text-muted">このプロジェクトに貢献してくださった方々をご紹介します</p>
 {% endblock %}
@@ -15,7 +15,7 @@
 <div class="category-section">
     <h2 class="section-title border-left">
         <i class="bi bi-star-fill text-warning"></i>
-        著者
+      Authors
     </h2>
     {% if contributors.authors %}
     <div class="row">
@@ -50,7 +50,7 @@
     {% else %}
     <div class="empty-message">
         <i class="bi bi-info-circle"></i>
-        著者情報がありません
+      作者は登録されていません
     </div>
     {% endif %}
 </div>
@@ -59,7 +59,7 @@
 <div class="category-section">
     <h2 class="section-title border-left">
         <i class="bi bi-heart-fill text-danger"></i>
-        特別コントリビューター
+      Special Contributors
     </h2>
     {% if contributors.specialContributers %}
     <div class="row">
@@ -94,7 +94,7 @@
     {% else %}
     <div class="empty-message">
         <i class="bi bi-info-circle"></i>
-        特別コントリビューター情報がありません
+        スペシャルコントリビューターは登録されていません
     </div>
     {% endif %}
 </div>
@@ -103,7 +103,7 @@
 <div class="category-section">
     <h2 class="section-title border-left">
         <i class="bi bi-people-fill text-primary"></i>
-        コントリビューター
+        Contributers
     </h2>
     {% if contributors.contributers %}
     <div class="row">
@@ -138,7 +138,7 @@
     {% else %}
     <div class="empty-message">
         <i class="bi bi-info-circle"></i>
-        コントリビューター情報がありません
+        コントリビューターは登録されていません
     </div>
     {% endif %}
 </div>
@@ -147,7 +147,7 @@
 <div class="category-section">
     <h2 class="section-title border-left">
         <i class="bi bi-emoji-heart-eyes text-success"></i>
-        ありがとうございます
+      Special Thanks
     </h2>
     {% if contributors.thanks %}
     <div class="row">
