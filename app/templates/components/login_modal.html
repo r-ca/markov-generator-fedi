@@ -8,22 +8,22 @@
             </div>
             <div class="modal-body">
                 <form action="/login" method="POST" id="login-form">
-                    <div class="form-section">
-                        <h6>インスタンスの種類</h6>
-                        <div class="form-check">
+                    <div class="form-section mb-4">
+                        <h6 class="mb-2">インスタンスの種類</h6>
+                        <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" name="type" id="software" value="misskey" checked>
                             <label class="form-check-label" for="software">Misskey</label>
                         </div>
-                        <div class="form-check">
+                        <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" name="type" id="software2" value="mastodon">
                             <label class="form-check-label" for="software2">Mastodon</label>
                         </div>
                     </div>
                     
-                    <div class="form-section">
-                        <h6>インスタンスのホスト名</h6>
+                    <div class="form-section mb-4">
+                        <h6 class="mb-2">インスタンスのホスト名</h6>
                         <div class="form-input">
-                            <input type="text" name="hostname" id="hostname" class="form-control" placeholder="example.com" required>
+                            <input type="text" name="hostname" id="hostname" class="form-control mb-1" placeholder="example.com" required>
                             <div class="invalid-feedback">
                                 正しいホスト名を入力してください。
                             </div>
@@ -40,23 +40,73 @@
                             <div id="importCollapse" class="accordion-collapse collapse" aria-labelledby="importHeading" data-bs-parent="#settingsAccordion">
                                 <div class="accordion-body">
                                     <div class="mb-3">
-                                        <label class="form-label" for="import_size">取り込み件数</label>
-                                        <select class="form-select" name="import_size" id="import_size">
+                                        <label class="form-label mb-2" for="import_size">取り込み件数</label>
+                                        <select class="form-select mb-2" name="import_size" id="import_size">
                                             {% for i in range(1000, 21000, 1000) %}
                                                 <option value="{{ i }}" {{ 'selected' if i == 10000 else '' }}>{{ i }}</option>
                                             {% endfor %}
                                             {% for i in range(25000, 100001, 25000) %}
                                                 <option value="{{ i }}">{{ i }}</option>
                                             {% endfor %}
+                                            {% for i in range(200000, 1000001, 200000) %}
+                                                <option value="{{ i }}">{{ i }}</option>
+                                            {% endfor %}
                                         </select>
-                                        <div class="form-text">学習に使用する投稿の件数を指定してください</div>
+                                        <div class="form-text mb-2">学習に使用する投稿の件数を指定してください</div>
+                                        <div class="alert alert-warning mt-2 mb-0" id="large-import-warning" style="display: none;">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                            <strong>注意:</strong> 大量の投稿を取り込む場合、以下の点にご注意ください：
+                                            <ul class="mb-0 mt-2">
+                                                <li>インスタンスによってはAPI制限により取得できない場合があります</li>
+                                                <li>処理時間が長くなり、数分〜数十分かかる場合があります</li>
+                                                <li>サーバーに負荷がかかる可能性があります</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="privacyHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#privacyCollapse" aria-expanded="false" aria-controls="privacyCollapse">
+                                    プライバシー設定
+                                </button>
+                            </h2>
+                            <div id="privacyCollapse" class="accordion-collapse collapse" aria-labelledby="privacyHeading" data-bs-parent="#settingsAccordion">
+                                <div class="accordion-body">
+                                    <div class="mb-3">
+                                        <label class="form-label mb-2">取り込む投稿の範囲</label>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="radio" name="importVisibility" id="public_only" value="public_only" checked>
+                                            <label class="form-check-label" for="public_only">公開投稿のみ</label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="radio" name="importVisibility" id="followers" value="followers">
+                                            <label class="form-check-label" for="followers">フォロワー限定投稿まで</label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="radio" name="importVisibility" id="direct" value="direct">
+                                            <label class="form-check-label" for="direct">すべての投稿(ダイレクト投稿を含む)</label>
+                                        </div>
+                                        <div class="form-text">学習に使用する投稿の公開範囲を指定してください</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" name="allowGenerateByOther" id="allowGenerateByOther" value="true">
+                                            <label class="form-check-label" for="allowGenerateByOther">
+                                                他のユーザーからの文章生成を許可する
+                                            </label>
+                                        </div>
+                                        <div class="form-text">チェックを入れると、他のユーザーがあなたの学習データを使って文章を生成できるようになります</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="d-grid gap-2">
+                    <div class="d-grid gap-2 mt-4">
                         <button type="submit" class="btn btn-primary">ログインして学習開始</button>
                     </div>
                 </form>
