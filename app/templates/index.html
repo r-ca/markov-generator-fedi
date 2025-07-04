@@ -45,3 +45,53 @@
 {% include 'components/login_modal.html' %}
 {% include 'components/delete_modal.html' %}
 {% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function (){
+        // 初期表示時の警告チェック
+        const initialImportSize = parseInt(document.querySelector('#import_size').value);
+        const warning = document.querySelector('#large-import-warning');
+        if (initialImportSize > 20000) {
+            warning.style.display = 'block';
+        }
+
+        document.querySelector('#hostname').addEventListener('input', function (){
+            if (this.value.match(/^[a-zA-Z0-9-_.]+$/)) {
+                this.classList.remove('is-invalid');
+            } else {
+                this.classList.add('is-invalid');
+            }
+        });
+
+        document.querySelector('#login-form').addEventListener('submit', function (e) {
+            const hostname = document.querySelector('#hostname').value;
+            if (!hostname.match(/^[a-zA-Z0-9-_.]+$/)) {
+                e.preventDefault();
+                document.querySelector('#hostname').classList.add('is-invalid');
+                return false;
+            }
+        });
+
+        // 削除確認チェックボックスの制御
+        const agreeDelete = document.querySelector('#agreeDelete');
+        const deleteSubmitButton = document.querySelector('#deleteSubmitButton');
+        if (agreeDelete && deleteSubmitButton) {
+            agreeDelete.addEventListener('change', function (e) {
+                deleteSubmitButton.disabled = !e.target.checked;
+            });
+        }
+
+        // 大量取り込み時の警告表示
+        document.querySelector('#import_size').addEventListener('change', function (e) {
+            const importSize = parseInt(e.target.value);
+            const warning = document.querySelector('#large-import-warning');
+            if (importSize > 20000) {
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}
