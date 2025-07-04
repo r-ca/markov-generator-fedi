@@ -26,7 +26,7 @@ class MastodonDataImporter(DataImporter):
             api_base_url=f"https://{session_data['hostname']}",
         )
 
-    def fetch_lines(self) -> Tuple[List[str], int]:
+    def fetch_lines(self) -> Tuple[List[str], int, int]:
         lines: List[str] = []
         imported = 0
         last_id = None
@@ -35,7 +35,7 @@ class MastodonDataImporter(DataImporter):
         # 進捗更新のための初期設定
         if self.job_id and self.job_id in job_status:
             job_status[self.job_id]['progress'] = 15
-            job_status[self.job_id]['progress_str'] = f'投稿を取得しています... (0/{target_size}件)'
+            job_status[self.job_id]['progress_str'] = f'投稿を取得しています... (取得済み: 0件)'
         
         for i in range(int(self.session_data['import_size'] / 40) + 1):
             block = self.mstdn.account_statuses(self.account['id'], limit=40, max_id=last_id, exclude_reblogs=True)
@@ -55,9 +55,9 @@ class MastodonDataImporter(DataImporter):
             
             # 進捗を更新
             if self.job_id and self.job_id in job_status:
-                progress_percent = min(15 + int((imported / target_size) * 65), 80)
+                progress_percent = min(15 + int((imported / target_size) * 65), 80) if target_size > 0 else min(15 + imported, 80)
                 job_status[self.job_id]['progress'] = progress_percent
-                job_status[self.job_id]['progress_str'] = f'投稿を取得しています... ({imported}/{target_size}件)'
+                job_status[self.job_id]['progress_str'] = f'投稿を取得しています... (取得済み: {imported}件)'
             
             last_id = block[-1]
             
@@ -65,4 +65,4 @@ class MastodonDataImporter(DataImporter):
             del block
             gc.collect()
             
-        return lines, imported 
+        return lines, imported, target_size 

@@ -20,7 +20,7 @@ class MisskeyDataImporter(DataImporter):
         self.mi = Misskey(address=session_data['hostname'], i=token)
         self.job_id = job_id
 
-    def fetch_lines(self) -> Tuple[List[str], int]:
+    def fetch_lines(self) -> Tuple[List[str], int, int]:
         # NOTE: progress updating is optional; handled by background_processor
         lines: List[str] = []
         imported_count = 0
@@ -30,12 +30,11 @@ class MisskeyDataImporter(DataImporter):
         # fetch user meta for total count
         user_block = self.mi.users_show(user_id=self.session_data['user_id'])
         total = int(user_block.get('notesCount', 0))
-        target_size = min(int(self.session_data['import_size']), total)
 
         # 進捗更新のための初期設定
         if self.job_id and self.job_id in job_status:
             job_status[self.job_id]['progress'] = 15
-            job_status[self.job_id]['progress_str'] = f'投稿を取得しています... (0/{target_size}件)'
+            job_status[self.job_id]['progress_str'] = f'投稿を取得しています... (取得済み: 0件)'
 
         for i in range(int(self.session_data['import_size'] / 100) + 1):
             notes_block = self.mi.users_notes(
@@ -65,12 +64,12 @@ class MisskeyDataImporter(DataImporter):
             
             # 進捗を更新
             if self.job_id and self.job_id in job_status:
-                progress_percent = min(15 + int((imported_count / target_size) * 65), 80)
+                progress_percent = min(15 + int((imported_count / total) * 65), 80) if total > 0 else min(15 + imported_count, 80)
                 job_status[self.job_id]['progress'] = progress_percent
-                job_status[self.job_id]['progress_str'] = f'投稿を取得しています... ({imported_count}/{target_size}件)'
+                job_status[self.job_id]['progress_str'] = f'投稿を取得しています... (取得済み: {imported_count}件)'
             
             # ブロック処理後にメモリを解放
             del notes_block
             gc.collect()
 
-        return lines, imported_count 
+        return lines, imported_count, total 

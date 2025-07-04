@@ -78,7 +78,7 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
 
         try:
             importer = MisskeyDataImporter(session_data, token, job_id)
-            lines, imported_notes = importer.fetch_lines()
+            lines, imported_notes, total_notes = importer.fetch_lines()
             _log_memory_usage("AFTER_FETCH", job_id)
         except Exception as e:
             job_status[job_id] = dict(
@@ -92,6 +92,7 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
         job_status[job_id]['progress'] = 80
 
         try:
+            job_status[job_id]['progress_str'] = f'投稿取得完了 ({imported_notes}件) - モデルを作成しています...'
             text_model = create_markov_model_by_multiline(lines)
             _log_memory_usage("AFTER_MODEL_CREATION", job_id)
         except Exception as e:
@@ -107,7 +108,7 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
             gc.collect()
             _log_memory_usage("AFTER_LINES_CLEANUP", job_id)
 
-        job_status[job_id]['progress_str'] = 'データベースに書き込み中です'
+        job_status[job_id]['progress_str'] = f'投稿取得完了 ({imported_notes}件) - データベースに書き込み中です'
         job_status[job_id]['progress'] = 90
 
         try:
@@ -198,7 +199,7 @@ def start_mastodon_job(
 
         try:
             importer = MastodonDataImporter(session_data, token, account, job_id)
-            lines, imported_toots = importer.fetch_lines()
+            lines, imported_toots, total_toots = importer.fetch_lines()
             _log_memory_usage("AFTER_FETCH", job_id)
         except Exception as e:
             job_status[job_id] = dict(
@@ -212,6 +213,7 @@ def start_mastodon_job(
         job_status[job_id]['progress'] = 80
 
         try:
+            job_status[job_id]['progress_str'] = f'投稿取得完了 ({imported_toots}件) - モデルを作成しています...'
             text_model = create_markov_model_by_multiline(lines)
             _log_memory_usage("AFTER_MODEL_CREATION", job_id)
         except Exception as e:
@@ -227,7 +229,7 @@ def start_mastodon_job(
             gc.collect()
             _log_memory_usage("AFTER_LINES_CLEANUP", job_id)
 
-        job_status[job_id]['progress_str'] = 'データベースに書き込み中です'
+        job_status[job_id]['progress_str'] = f'投稿取得完了 ({imported_toots}件) - データベースに書き込み中です'
         job_status[job_id]['progress'] = 90
 
         try:
