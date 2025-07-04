@@ -54,55 +54,51 @@
     margin-bottom: var(--spacing-lg);
 }
 
-/* ユーザーカード */
-.user-card {
-    background: var(--white);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-md);
-    box-shadow: var(--shadow-card);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+/* コントリビューターアイテム */
+.contributor-item {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.user-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
+.contributor-item:last-child {
+    border-bottom: none;
 }
 
-.user-avatar {
-    width: 64px;
-    height: 64px;
+.contributor-avatar {
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
     background-color: var(--light-bg);
-    border: 2px solid var(--border-color);
+    border: 1px solid var(--border-color);
 }
 
-.user-info {
+.contributor-info {
     flex: 1;
     text-align: left;
 }
 
-.user-name {
+.contributor-name {
     font-weight: 600;
-    font-size: var(--font-size-xl);
-    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-xs);
     color: var(--main-title-color);
 }
 
-.user-link {
+.contributor-link {
     color: var(--primary-color);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
 }
 
-.user-link:hover {
+.contributor-link:hover {
     color: var(--primary-hover);
     text-decoration: underline;
 }
@@ -126,12 +122,13 @@
         padding: var(--spacing-lg);
     }
     
-    .user-card {
+    .contributor-item {
         flex-direction: column;
         text-align: center;
+        padding: var(--spacing-lg) 0;
     }
     
-    .user-info {
+    .contributor-info {
         text-align: center;
     }
 } 

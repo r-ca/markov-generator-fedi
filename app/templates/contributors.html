@@ -21,11 +21,11 @@
     <div class="row">
         {% for author in contributors.authors %}
         <div class="col-md-6 col-lg-4">
-            <div class="user-card">
-                <img src="{{ author.iconUrl }}" alt="{{ author.displayName }}" class="user-avatar">
-                <div class="user-info">
-                    <div class="user-name">{{ author.displayName }}</div>
-                    <a href="{{ author.github }}" target="_blank" rel="noopener noreferrer" class="user-link">
+            <div class="contributor-item">
+                <img src="{{ author.iconUrl }}" alt="{{ author.displayName }}" class="contributor-avatar">
+                <div class="contributor-info">
+                    <div class="contributor-name">{{ author.displayName }}</div>
+                    <a href="{{ author.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
                         <i class="bi bi-github"></i>
                         GitHub
                     </a>
@@ -52,11 +52,11 @@
     <div class="row">
         {% for contributor in contributors.specialContributers %}
         <div class="col-md-6 col-lg-4">
-            <div class="user-card">
-                <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="user-avatar">
-                <div class="user-info">
-                    <div class="user-name">{{ contributor.displayName }}</div>
-                    <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="user-link">
+            <div class="contributor-item">
+                <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
+                <div class="contributor-info">
+                    <div class="contributor-name">{{ contributor.displayName }}</div>
+                    <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
                         <i class="bi bi-github"></i>
                         GitHub
                     </a>
@@ -83,11 +83,11 @@
     <div class="row">
         {% for contributor in contributors.contributers %}
         <div class="col-md-6 col-lg-4">
-            <div class="user-card">
-                <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="user-avatar">
-                <div class="user-info">
-                    <div class="user-name">{{ contributor.displayName }}</div>
-                    <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="user-link">
+            <div class="contributor-item">
+                <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
+                <div class="contributor-info">
+                    <div class="contributor-name">{{ contributor.displayName }}</div>
+                    <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
                         <i class="bi bi-github"></i>
                         GitHub
                     </a>
