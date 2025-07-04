@@ -6,109 +6,111 @@
 {% block ogp_description %}このプロジェクトに貢献してくださった方々をご紹介します{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <div class="container">
-        <a href="/" class="back-link">
-            <i class="bi bi-arrow-left"></i>
-            ホームに戻る
-        </a>
+<div class="page-container">
+    <div class="content-wrapper">
+        <nav class="breadcrumb">
+            <a href="/">ホーム</a>
+            <span class="text-muted mx-2">›</span>
+            <span class="text-muted">コントリビューター</span>
+        </nav>
+
         <h1 class="main-title">コントリビューター</h1>
         <p class="lead text-muted">このプロジェクトに貢献してくださった方々をご紹介します</p>
-    </div>
-</div>
 
-<div class="container">
-    <!-- 著者セクション -->
-    <div class="category-section">
-        <h2 class="section-title">
-            <i class="bi bi-star-fill text-warning"></i>
-            著者
-        </h2>
-        {% if contributors.authors %}
-        <div class="row">
-            {% for author in contributors.authors %}
-            <div class="col-md-6 col-lg-4">
-                <div class="contributor-card">
-                    <img src="{{ author.iconUrl }}" alt="{{ author.displayName }}" class="contributor-avatar">
-                    <div class="contributor-info">
-                        <div class="contributor-name">{{ author.displayName }}</div>
-                        <a href="{{ author.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                            <i class="bi bi-github"></i>
-                            GitHub
-                        </a>
+        <div class="settings-section">
+            <!-- 著者セクション -->
+            <div class="category-section">
+                <h2 class="section-title">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    著者
+                </h2>
+                {% if contributors.authors %}
+                <div class="row">
+                    {% for author in contributors.authors %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="contributor-card">
+                            <img src="{{ author.iconUrl }}" alt="{{ author.displayName }}" class="contributor-avatar">
+                            <div class="contributor-info">
+                                <div class="contributor-name">{{ author.displayName }}</div>
+                                <a href="{{ author.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                                    <i class="bi bi-github"></i>
+                                    GitHub
+                                </a>
+                            </div>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
+                {% else %}
+                <div class="empty-message">
+                    <i class="bi bi-info-circle"></i>
+                    著者情報がありません
+                </div>
+                {% endif %}
             </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="empty-message">
-            <i class="bi bi-info-circle"></i>
-            著者情報がありません
-        </div>
-        {% endif %}
-    </div>
 
-    <!-- 特別コントリビューターセクション -->
-    <div class="category-section">
-        <h2 class="section-title">
-            <i class="bi bi-heart-fill text-danger"></i>
-            特別コントリビューター
-        </h2>
-        {% if contributors.specialContributers %}
-        <div class="row">
-            {% for contributor in contributors.specialContributers %}
-            <div class="col-md-6 col-lg-4">
-                <div class="contributor-card">
-                    <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
-                    <div class="contributor-info">
-                        <div class="contributor-name">{{ contributor.displayName }}</div>
-                        <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                            <i class="bi bi-github"></i>
-                            GitHub
-                        </a>
+            <!-- 特別コントリビューターセクション -->
+            <div class="category-section">
+                <h2 class="section-title">
+                    <i class="bi bi-heart-fill text-danger"></i>
+                    特別コントリビューター
+                </h2>
+                {% if contributors.specialContributers %}
+                <div class="row">
+                    {% for contributor in contributors.specialContributers %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="contributor-card">
+                            <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
+                            <div class="contributor-info">
+                                <div class="contributor-name">{{ contributor.displayName }}</div>
+                                <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                                    <i class="bi bi-github"></i>
+                                    GitHub
+                                </a>
+                            </div>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
+                {% else %}
+                <div class="empty-message">
+                    <i class="bi bi-info-circle"></i>
+                    特別コントリビューター情報がありません
+                </div>
+                {% endif %}
             </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="empty-message">
-            <i class="bi bi-info-circle"></i>
-            特別コントリビューター情報がありません
-        </div>
-        {% endif %}
-    </div>
 
-    <!-- 一般コントリビューターセクション -->
-    <div class="category-section">
-        <h2 class="section-title">
-            <i class="bi bi-people-fill text-primary"></i>
-            コントリビューター
-        </h2>
-        {% if contributors.contributers %}
-        <div class="row">
-            {% for contributor in contributors.contributers %}
-            <div class="col-md-6 col-lg-4">
-                <div class="contributor-card">
-                    <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
-                    <div class="contributor-info">
-                        <div class="contributor-name">{{ contributor.displayName }}</div>
-                        <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                            <i class="bi bi-github"></i>
-                            GitHub
-                        </a>
+            <!-- 一般コントリビューターセクション -->
+            <div class="category-section">
+                <h2 class="section-title">
+                    <i class="bi bi-people-fill text-primary"></i>
+                    コントリビューター
+                </h2>
+                {% if contributors.contributers %}
+                <div class="row">
+                    {% for contributor in contributors.contributers %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="contributor-card">
+                            <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
+                            <div class="contributor-info">
+                                <div class="contributor-name">{{ contributor.displayName }}</div>
+                                <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                                    <i class="bi bi-github"></i>
+                                    GitHub
+                                </a>
+                            </div>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
+                {% else %}
+                <div class="empty-message">
+                    <i class="bi bi-info-circle"></i>
+                    コントリビューター情報がありません
+                </div>
+                {% endif %}
             </div>
-            {% endfor %}
         </div>
-        {% else %}
-        <div class="empty-message">
-            <i class="bi bi-info-circle"></i>
-            コントリビューター情報がありません
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %} 
