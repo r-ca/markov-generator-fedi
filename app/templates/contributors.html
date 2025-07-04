@@ -112,4 +112,34 @@
     </div>
     {% endif %}
 </div>
+
+<!-- Thanksセクション -->
+<div class="category-section">
+    <h2 class="section-title border-left">
+        <i class="bi bi-emoji-heart-eyes text-success"></i>
+        ありがとうございます
+    </h2>
+    {% if contributors.thanks %}
+    <div class="row">
+        {% for thank in contributors.thanks %}
+        <div class="col-md-6 col-lg-4">
+            <div class="contributor-item">
+                <img src="{{ thank.iconUrl }}" alt="{{ thank.displayName }}" class="contributor-avatar">
+                <div class="contributor-info">
+                    <div class="contributor-name">{{ thank.displayName }}</div>
+                    {% if thank.description %}
+                    <div class="contributor-description">{{ thank.description }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-message">
+        <i class="bi bi-info-circle"></i>
+        感謝のメッセージがありません
+    </div>
+    {% endif %}
+</div>
 {% endblock %} 
