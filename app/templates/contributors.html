@@ -28,10 +28,20 @@
                     {% if author.description %}
                     <div class="contributor-description">{{ author.description }}</div>
                     {% endif %}
-                    <a href="{{ author.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                        <i class="bi bi-github"></i>
-                        GitHub
-                    </a>
+                    <div class="contributor-links">
+                        {% if author.github %}
+                        <a href="{{ author.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-github"></i>
+                            GitHub
+                        </a>
+                        {% endif %}
+                        {% if author.url %}
+                        <a href="{{ author.url }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-link-45deg"></i>
+                            リンク
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -62,10 +72,20 @@
                     {% if contributor.description %}
                     <div class="contributor-description">{{ contributor.description }}</div>
                     {% endif %}
-                    <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                        <i class="bi bi-github"></i>
-                        GitHub
-                    </a>
+                    <div class="contributor-links">
+                        {% if contributor.github %}
+                        <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-github"></i>
+                            GitHub
+                        </a>
+                        {% endif %}
+                        {% if contributor.url %}
+                        <a href="{{ contributor.url }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-link-45deg"></i>
+                            リンク
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -96,10 +116,20 @@
                     {% if contributor.description %}
                     <div class="contributor-description">{{ contributor.description }}</div>
                     {% endif %}
-                    <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                        <i class="bi bi-github"></i>
-                        GitHub
-                    </a>
+                    <div class="contributor-links">
+                        {% if contributor.github %}
+                        <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-github"></i>
+                            GitHub
+                        </a>
+                        {% endif %}
+                        {% if contributor.url %}
+                        <a href="{{ contributor.url }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-link-45deg"></i>
+                            リンク
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -130,6 +160,20 @@
                     {% if thank.description %}
                     <div class="contributor-description">{{ thank.description }}</div>
                     {% endif %}
+                    <div class="contributor-links">
+                        {% if thank.github %}
+                        <a href="{{ thank.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-github"></i>
+                            GitHub
+                        </a>
+                        {% endif %}
+                        {% if thank.url %}
+                        <a href="{{ thank.url }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-link-45deg"></i>
+                            リンク
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

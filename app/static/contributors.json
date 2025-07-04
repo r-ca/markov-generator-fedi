@@ -27,17 +27,20 @@
     {
       "displayName": "Misskey Community",
       "iconUrl": "https://misskey.io/static-assets/icon.png",
-      "description": "素晴らしいプラットフォームを提供していただき、ありがとうございます。"
+      "description": "素晴らしいプラットフォームを提供していただき、ありがとうございます。",
+      "url": "https://misskey.io"
     },
     {
       "displayName": "Mastodon Community",
       "iconUrl": "https://joinmastodon.org/static/media/logo-full.811405e9.svg",
-      "description": "オープンソースの分散型SNSを構築し、維持していただき、ありがとうございます。"
+      "description": "オープンソースの分散型SNSを構築し、維持していただき、ありがとうございます。",
+      "url": "https://joinmastodon.org"
     },
     {
       "displayName": "Python Community",
       "iconUrl": "https://www.python.org/static/community_logos/python-logo-generic.svg",
-      "description": "素晴らしいプログラミング言語と豊富なライブラリを提供していただき、ありがとうございます。"
+      "description": "素晴らしいプログラミング言語と豊富なライブラリを提供していただき、ありがとうございます。",
+      "url": "https://www.python.org"
     }
   ]
 } 

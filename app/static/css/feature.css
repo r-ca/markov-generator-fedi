@@ -97,6 +97,12 @@
     word-wrap: break-word;
 }
 
+.contributor-links {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
 .contributor-link {
     color: var(--primary-color);
     text-decoration: none;
@@ -138,5 +144,9 @@
     
     .contributor-info {
         text-align: center;
+    }
+    
+    .contributor-links {
+        justify-content: center;
     }
 } 
