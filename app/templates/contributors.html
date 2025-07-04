@@ -15,7 +15,7 @@
 <div class="category-section">
     <h2 class="section-title border-left">
         <i class="bi bi-star-fill text-warning"></i>
-        著者
+      Authors
     </h2>
     {% if contributors.authors %}
     <div class="row">
@@ -25,10 +25,23 @@
                 <img src="{{ author.iconUrl }}" alt="{{ author.displayName }}" class="contributor-avatar">
                 <div class="contributor-info">
                     <div class="contributor-name">{{ author.displayName }}</div>
-                    <a href="{{ author.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                        <i class="bi bi-github"></i>
-                        GitHub
-                    </a>
+                    {% if author.description %}
+                    <div class="contributor-description">{{ author.description }}</div>
+                    {% endif %}
+                    <div class="contributor-links">
+                        {% if author.github %}
+                        <a href="{{ author.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-github"></i>
+                            GitHub
+                        </a>
+                        {% endif %}
+                        {% if author.url %}
+                        <a href="{{ author.url }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-link-45deg"></i>
+                            リンク
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -37,7 +50,7 @@
     {% else %}
     <div class="empty-message">
         <i class="bi bi-info-circle"></i>
-        著者情報がありません
+      作者は登録されていません
     </div>
     {% endif %}
 </div>
@@ -46,7 +59,7 @@
 <div class="category-section">
     <h2 class="section-title border-left">
         <i class="bi bi-heart-fill text-danger"></i>
-        特別コントリビューター
+      Special Contributors
     </h2>
     {% if contributors.specialContributers %}
     <div class="row">
@@ -56,10 +69,23 @@
                 <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
                 <div class="contributor-info">
                     <div class="contributor-name">{{ contributor.displayName }}</div>
-                    <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                        <i class="bi bi-github"></i>
-                        GitHub
-                    </a>
+                    {% if contributor.description %}
+                    <div class="contributor-description">{{ contributor.description }}</div>
+                    {% endif %}
+                    <div class="contributor-links">
+                        {% if contributor.github %}
+                        <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-github"></i>
+                            GitHub
+                        </a>
+                        {% endif %}
+                        {% if contributor.url %}
+                        <a href="{{ contributor.url }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-link-45deg"></i>
+                            リンク
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,7 +94,7 @@
     {% else %}
     <div class="empty-message">
         <i class="bi bi-info-circle"></i>
-        特別コントリビューター情報がありません
+        スペシャルコントリビューターは登録されていません
     </div>
     {% endif %}
 </div>
@@ -77,7 +103,7 @@
 <div class="category-section">
     <h2 class="section-title border-left">
         <i class="bi bi-people-fill text-primary"></i>
-        コントリビューター
+        Contributors
     </h2>
     {% if contributors.contributers %}
     <div class="row">
@@ -87,10 +113,23 @@
                 <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
                 <div class="contributor-info">
                     <div class="contributor-name">{{ contributor.displayName }}</div>
-                    <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                        <i class="bi bi-github"></i>
-                        GitHub
-                    </a>
+                    {% if contributor.description %}
+                    <div class="contributor-description">{{ contributor.description }}</div>
+                    {% endif %}
+                    <div class="contributor-links">
+                        {% if contributor.github %}
+                        <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-github"></i>
+                            GitHub
+                        </a>
+                        {% endif %}
+                        {% if contributor.url %}
+                        <a href="{{ contributor.url }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-link-45deg"></i>
+                            リンク
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -99,7 +138,51 @@
     {% else %}
     <div class="empty-message">
         <i class="bi bi-info-circle"></i>
-        コントリビューター情報がありません
+        コントリビューターは登録されていません
+    </div>
+    {% endif %}
+</div>
+
+<!-- Thanksセクション -->
+<div class="category-section">
+    <h2 class="section-title border-left">
+        <i class="bi bi-bookmark-star-fill text-success"></i>
+      Special Thanks
+    </h2>
+    {% if contributors.thanks %}
+    <div class="row">
+        {% for thank in contributors.thanks %}
+        <div class="col-md-6 col-lg-4">
+            <div class="contributor-item">
+                <img src="{{ thank.iconUrl }}" alt="{{ thank.displayName }}" class="contributor-avatar">
+                <div class="contributor-info">
+                    <div class="contributor-name">{{ thank.displayName }}</div>
+                    {% if thank.description %}
+                    <div class="contributor-description">{{ thank.description }}</div>
+                    {% endif %}
+                    <div class="contributor-links">
+                        {% if thank.github %}
+                        <a href="{{ thank.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-github"></i>
+                            GitHub
+                        </a>
+                        {% endif %}
+                        {% if thank.url %}
+                        <a href="{{ thank.url }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                            <i class="bi bi-link-45deg"></i>
+                            リンク
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-message">
+        <i class="bi bi-info-circle"></i>
+      コントリビューターは登録されていません
     </div>
     {% endif %}
 </div>

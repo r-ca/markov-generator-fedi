@@ -3,21 +3,56 @@
     {
       "displayName": "CyberRex",
       "iconUrl": "https://github.com/CyberRex0.png",
-      "github": "https://github.com/CyberRex0"
+      "github": "https://github.com/CyberRex0",
+      "description": "原作者"
     }
   ],
   "specialContributers": [
     {
+      "displayName": "ろむねこ",
+      "iconUrl": "https://github.com/r-ca.png",
+      "github": "https://github.com/r-ca",
+      "description": "このフォークのメンテナ"
+    },
+    {
       "displayName": "lqvp",
       "iconUrl": "https://github.com/lqvp.png",
-      "github": "https://github.com/lqvp"
+      "github": "https://github.com/lqvp",
+      "url": "https://n8.lc",
+      "description": "このフォークのメンテナ"
     }
   ],
   "contributers": [
     {
-      "displayName": "r-ca",
-      "iconUrl": "https://github.com/r-ca.png",
-      "github": "https://github.com/r-ca"
+      "displayName": "Stesan",
+      "iconUrl": "https://github.com/Steve-0628.png",
+      "github": "https://github.com/Steve-0628",
+      "description": "テスト & フィードバック, 実装例の提供"
+    }
+  ],
+  "thanks": [
+    {
+      "displayName": "SyoBoN",
+      "iconUrl": "https://github.com/syobocat.png",
+      "github": "https://github.com/syobocat",
+      "url": "https://syobon.net/",
+      "description": "テスト & フィードバック"
+    },
+    {
+      "displayName": "nexryai",
+      "iconUrl": "https://github.com/nexryai.png",
+      "github": "https://github.com/nexryai",
+      "description": "テスト & フィードバック"
+    },
+    {
+      "displayName": "Claude",
+      "iconUrl": "https://github.com/claude.png",
+      "description": "ファイル分割, コーディングアシスタント"
+    },
+    {
+      "displayName": "Gemini",
+      "iconUrl": "https://github.com/gemini-code-assist.png",
+      "description": "コーディングアシスタント"
     }
   ]
 } 
