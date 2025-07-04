@@ -80,6 +80,8 @@
 .contributor-info {
     flex: 1;
     text-align: left;
+    min-width: 0; /* テキストの折り返しを確実にする */
+    padding-left: var(--spacing-lg); /* インデント感を出すための左余白を増加 */
 }
 
 .contributor-name {
@@ -87,6 +89,7 @@
     font-size: var(--font-size-base);
     margin-bottom: var(--spacing-xs);
     color: var(--main-title-color);
+    word-wrap: break-word;
 }
 
 .contributor-description {
@@ -110,11 +113,9 @@
     align-items: center;
     gap: var(--spacing-xs);
     font-size: var(--font-size-sm);
-}
-
-.contributor-link:hover {
-    color: var(--primary-hover);
-    text-decoration: underline;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius);
+    background-color: var(--light-bg);
 }
 
 /* カテゴリセクション */
@@ -136,17 +137,91 @@
         padding: var(--spacing-lg);
     }
     
+    .section-title {
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .section-title.border-left {
+        padding-left: var(--spacing-sm);
+    }
+    
     .contributor-item {
-        flex-direction: column;
-        text-align: center;
-        padding: var(--spacing-lg) 0;
+        flex-direction: row;
+        text-align: left;
+        padding: var(--spacing-md) 0;
+        gap: var(--spacing-sm);
+    }
+    
+    .contributor-avatar {
+        width: 40px;
+        height: 40px;
     }
     
     .contributor-info {
-        text-align: center;
+        text-align: left;
+        flex: 1;
+        min-width: 0;
+        padding-left: var(--spacing-md); /* モバイルでもインデント感を維持 */
+    }
+    
+    .contributor-name {
+        font-size: var(--font-size-sm);
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .contributor-description {
+        font-size: var(--font-size-xs);
+        margin-bottom: var(--spacing-xs);
+        line-height: 1.3;
     }
     
     .contributor-links {
-        justify-content: center;
+        justify-content: flex-start;
+        gap: var(--spacing-xs);
+    }
+    
+    .contributor-link {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xs);
+        gap: var(--spacing-xs);
+    }
+    
+    .category-section {
+        margin-bottom: var(--spacing-xl);
+    }
+}
+
+/* さらに小さい画面用 */
+@media (max-width: 480px) {
+    .contributor-item {
+        padding: var(--spacing-sm) 0;
+    }
+    
+    .contributor-avatar {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .contributor-info {
+        padding-left: var(--spacing-sm); /* 小さい画面でもインデント感を維持 */
+    }
+    
+    .contributor-name {
+        font-size: var(--font-size-sm);
+    }
+    
+    .contributor-description {
+        font-size: var(--font-size-xs);
+    }
+    
+    .contributor-links {
+        flex-direction: row; /* 横並びを維持 */
+        gap: var(--spacing-xs);
+    }
+    
+    .contributor-link {
+        justify-content: flex-start;
+        width: fit-content;
     }
 } 
