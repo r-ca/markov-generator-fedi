@@ -52,8 +52,8 @@
     },
     {
       "displayName": "Gemini",
-      "iconUrl": "https://github.com/gemini-code-assistant.png",
-      "github": "https://github.com/gemini-code-assistant",
+      "iconUrl": "https://github.com/gemini-code-assist.png",
+      "github": "https://github.com/gemini-code-assist",
       "description": "コーディングアシスタント"
     }
   ]
