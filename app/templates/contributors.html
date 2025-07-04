@@ -25,6 +25,9 @@
                 <img src="{{ author.iconUrl }}" alt="{{ author.displayName }}" class="contributor-avatar">
                 <div class="contributor-info">
                     <div class="contributor-name">{{ author.displayName }}</div>
+                    {% if author.description %}
+                    <div class="contributor-description">{{ author.description }}</div>
+                    {% endif %}
                     <a href="{{ author.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
                         <i class="bi bi-github"></i>
                         GitHub
@@ -56,6 +59,9 @@
                 <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
                 <div class="contributor-info">
                     <div class="contributor-name">{{ contributor.displayName }}</div>
+                    {% if contributor.description %}
+                    <div class="contributor-description">{{ contributor.description }}</div>
+                    {% endif %}
                     <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
                         <i class="bi bi-github"></i>
                         GitHub
@@ -87,6 +93,9 @@
                 <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
                 <div class="contributor-info">
                     <div class="contributor-name">{{ contributor.displayName }}</div>
+                    {% if contributor.description %}
+                    <div class="contributor-description">{{ contributor.description }}</div>
+                    {% endif %}
                     <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
                         <i class="bi bi-github"></i>
                         GitHub

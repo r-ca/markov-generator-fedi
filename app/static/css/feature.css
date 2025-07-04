@@ -57,7 +57,7 @@
 /* コントリビューターアイテム */
 .contributor-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: var(--spacing-md);
     padding: var(--spacing-md) 0;
     border-bottom: 1px solid var(--border-color);
@@ -87,6 +87,14 @@
     font-size: var(--font-size-base);
     margin-bottom: var(--spacing-xs);
     color: var(--main-title-color);
+}
+
+.contributor-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: var(--spacing-xs);
+    word-wrap: break-word;
 }
 
 .contributor-link {
