@@ -1,0 +1,66 @@
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalTitle">ログインして学習する</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/login" method="POST" id="login-form">
+                    <div class="form-section">
+                        <h6>インスタンスの種類</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="type" id="software" value="misskey" checked>
+                            <label class="form-check-label" for="software">Misskey</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="type" id="software2" value="mastodon">
+                            <label class="form-check-label" for="software2">Mastodon</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h6>インスタンスのホスト名</h6>
+                        <div class="form-input">
+                            <input type="text" name="hostname" id="hostname" class="form-control" placeholder="example.com" required>
+                            <div class="invalid-feedback">
+                                正しいホスト名を入力してください。
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion" id="settingsAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="importHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#importCollapse" aria-expanded="false" aria-controls="importCollapse">
+                                    取り込み設定
+                                </button>
+                            </h2>
+                            <div id="importCollapse" class="accordion-collapse collapse" aria-labelledby="importHeading" data-bs-parent="#settingsAccordion">
+                                <div class="accordion-body">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="import_size">取り込み件数</label>
+                                        <select class="form-select" name="import_size" id="import_size">
+                                            {% for i in range(1000, 21000, 1000) %}
+                                                <option value="{{ i }}" {{ 'selected' if i == 10000 else '' }}>{{ i }}</option>
+                                            {% endfor %}
+                                            {% for i in range(25000, 100001, 25000) %}
+                                                <option value="{{ i }}">{{ i }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="form-text">学習に使用する投稿の件数を指定してください</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">ログインして学習開始</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 

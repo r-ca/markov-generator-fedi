@@ -1,489 +1,268 @@
-<!DOCTYPE html>
-<html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width">
-        <title>マルコフ連鎖ジェネレーター for Fediverse</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <style type="text/css">
-            :root {
-                --border-radius: 8px;
-                --main-title-color: #2c3e50;
-                --main-icon-color: #007bff;
-                --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-                --primary-color: #007bff;
-                --primary-gradient: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-                --success-color: #28a745;
-                --danger-color: #dc3545;
-                --warning-color: #ffc107;
-                --light-bg: #f8f9fa;
-                --text-muted: #6c757d;
-            }
-            
-            body {
-                background-color: var(--light-bg);
-                min-height: 100vh;
-                margin: 0;
-                display: flex;
-                align-items: flex-start;
-                justify-content: center;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            }
-            
-            .centered-content {
-                width: 100%;
-                max-width: 600px;
-                padding: 2rem 1rem;
-                text-align: center;
-            }
-            
-            .main-title {
-                color: var(--main-title-color);
-                font-weight: 600;
-                margin-bottom: 2rem;
-                font-size: 2rem;
-            }
-            
-            .main-icon {
-                font-size: 2.2rem;
-                color: var(--main-icon-color);
-                margin-bottom: 1.2rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 100%;
-            }
-            
-            .page-container {
-                display: flex;
-                justify-content: center;
-                padding: 2rem 1rem;
-                width: 100%;
-                box-sizing: border-box;
-            }
-            
-            .content-wrapper {
-                width: 100%;
-                max-width: 600px;
-            }
-            
-            .settings-section, .result-section {
-                background: white;
-                padding: 2rem;
-                border-radius: var(--border-radius);
-                box-shadow: var(--shadow);
-                margin-bottom: 1.5rem;
-            }
-            
-            .settings-title, .result-title {
-                font-size: 1.2rem;
-                font-weight: 600;
-                color: #495057;
-                margin-bottom: 1.5rem;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
-            
-            .btn {
-                border-radius: var(--border-radius) !important;
-            }
-            
-            .breadcrumb {
-                background: none;
-                padding: 0;
-                margin-bottom: 1.5rem;
-                font-size: 0.9rem;
-            }
-            
-            .breadcrumb a {
-                color: var(--text-muted);
-                text-decoration: none;
-            }
-            
-            .breadcrumb a:hover {
-                color: var(--primary-color);
-            }
-            
-            .form-row {
-                display: grid;
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-            
-            .form-group {
-                display: flex;
-                flex-direction: column;
-            }
-            
-            .form-label {
-                font-weight: 500;
-                color: #495057;
-                margin-bottom: 0.5rem;
-                font-size: 0.95rem;
-            }
-            
-            .form-control {
-                border: 1px solid #dee2e6;
-                border-radius: var(--border-radius);
-                padding: 0.75rem 1rem;
-                font-size: 0.95rem;
-                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-            }
-            
-            .form-control:focus {
-                border-color: var(--primary-color);
-                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-                outline: none;
-            }
-            
-            .form-text {
-                font-size: 0.875rem;
-                color: var(--text-muted);
-                margin-top: 0.25rem;
-            }
-            
-            .btn-primary {
-                background: var(--primary-gradient);
-                color: white;
-                border-radius: var(--border-radius) !important;
-            }
-            
-            .btn-primary:hover {
-                background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
-                transform: translateY(-1px);
-                box-shadow: var(--shadow-hover);
-            }
-            
-            .btn-outline-primary {
-                border: 1px solid var(--primary-color);
-                color: var(--primary-color);
-                background: transparent;
-                border-radius: var(--border-radius) !important;
-            }
-            
-            .btn-outline-primary:hover {
-                background: var(--primary-color);
-                color: white;
-            }
-            
-            .btn-sm {
-                padding: 0.5rem 1rem;
-                font-size: 0.875rem;
-            }
-            
-            .btn-lg {
-                padding: 1rem 2rem;
-                font-size: 1.1rem;
-            }
-            
-            .generate-btn {
-                width: 100%;
-                margin-top: 1rem;
-            }
-            
-            .generated-text {
-                font-size: 1.1rem;
-                line-height: 1.6;
-                color: #2c3e50;
-                padding: 1.5rem;
-                background: var(--light-bg);
-                border-radius: var(--border-radius);
-                margin-bottom: 1.5rem;
-                word-wrap: break-word;
-            }
-            
-            .error-message {
-                color: var(--danger-color);
-                padding: 1.5rem;
-                background: #f8d7da;
-                border: 1px solid #f5c6cb;
-                border-radius: var(--border-radius);
-                margin-bottom: 1.5rem;
-            }
-            
-            .alert {
-                border-radius: var(--border-radius);
-                margin-bottom: 1.5rem;
-            }
-            
-            .action-buttons {
-                display: flex;
-                gap: 0.75rem;
-                align-items: center;
-                flex-wrap: wrap;
-                margin-bottom: 1.5rem;
-            }
-            
-            .processing-time {
-                color: var(--text-muted);
-                font-size: 0.875rem;
-                margin-left: auto;
-                display: flex;
-                align-items: center;
-                gap: 0.25rem;
-            }
-            
-            .details-section {
-                border-top: 1px solid #dee2e6;
-                padding-top: 1.5rem;
-            }
-            
-            .details-summary {
-                cursor: pointer;
-                font-weight: 500;
-                color: #495057;
-                margin-bottom: 1rem;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
-            
-            .details-content h6 {
-                font-size: 1rem;
-                color: #495057;
-                margin-bottom: 0.5rem;
-                font-weight: 600;
-            }
-            
-            .details-content p {
-                margin-bottom: 1rem;
-                color: #6c757d;
-            }
-            
-            /* Mobile responsive */
-            @media (max-width: 768px) {
-                .centered-content, .content-wrapper {
-                    padding: 1rem 0.5rem;
-                }
-                body {
-                    padding: 0.5rem;
-                }
-                .form-row {
-                    grid-template-columns: 1fr;
-                }
-                .action-buttons {
-                    flex-direction: column;
-                    align-items: stretch;
-                }
-                .action-buttons .btn {
-                    width: 100%;
-                }
-                .processing-time {
-                    margin-left: 0;
-                    justify-content: center;
-                }
-            }
-            
+{% extends "base.html" %}
 
-            
-            @media (min-width: 769px) {
-                .form-row {
-                    grid-template-columns: 1fr 1fr;
-                }
-                
-                .form-row .form-group:first-child {
-                    grid-column: 1 / -1;
-                }
-            }
+{% block title %}文章生成 - マルコフ連鎖ジェネレーター for Fediverse{% endblock %}
 
-            @media (min-width: 992px) {
-                .content-wrapper {
-                    max-width: 1200px;
-                }
-                .main-layout {
-                    display: flex;
-                    gap: 1.5rem;
-                    align-items: flex-start;
-                }
-                .settings-section, .result-section {
-                    flex: 1;
-                    margin-bottom: 0;
-                }
-            }
-        </style>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
-        <script type="text/javascript">
-            function clipboard_set(text){
-                var pre = document.createElement('pre');
-                pre.style.webkitUserSelect = 'auto';
-                pre.style.userSelect = 'auto';
-                pre.textContent = text;
-                document.body.appendChild(pre);
-                document.getSelection().selectAllChildren(pre);
-                var result = document.execCommand('copy');
-                document.body.removeChild(pre);
+{% block ogp_title %}文章生成 - マルコフ連鎖ジェネレーター for Fediverse{% endblock %}
+{% block ogp_description %}
+{% if not request.args.get('preset') %}
+あなたのMisskey/Mastodonアカウントの投稿を学習して文章を生成します
+{% else %}
+{{ request.args.get('preset') }}さんの学習データで文章を作ってみよう！
+{% endif %}
+{% endblock %}
 
-                return result;
-            }
-        </script>
+{% block extra_css %}
+<style>
+    .action-buttons {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .processing-time {
+        color: var(--text-muted);
+        font-size: var(--font-size-sm);
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+    
+    .details-section {
+        border-top: 1px solid var(--border-color);
+        padding-top: var(--spacing-lg);
+    }
+    
+    .details-summary {
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--main-title-color);
+        margin-bottom: var(--spacing-md);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+    
+    .details-content h6 {
+        font-size: var(--font-size-base);
+        color: var(--main-title-color);
+        margin-bottom: var(--spacing-sm);
+        font-weight: 600;
+    }
+    
+    .details-content p {
+        margin-bottom: var(--spacing-md);
+        color: var(--text-muted);
+    }
+    
+    @media (max-width: 768px) {
+        .action-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .action-buttons .btn {
+            width: 100%;
+        }
+        .processing-time {
+            margin-left: 0;
+            justify-content: center;
+        }
+    }
+    
+    @media (min-width: 769px) {
+        .form-row {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .form-row .form-group:first-child {
+            grid-column: 1 / -1;
+        }
+    }
 
-        <!-- OGP -->
-        <meta property="og:title" content="マルコフ連鎖ジェネレーター for Fediverse">
-        <meta property="og:type" content="website">
-        {% if not request.args.get('preset') %}
-        <meta property="og:url" content="https://{{ request.host }}/">
-        <meta property="og:description" content="あなたのMisskey/Mastodonアカウントの投稿を学習して文章を生成します">
-        {% else %}
-        <meta property="og:url" content="https://{{ request.host }}/generate?preset={{ up.quote(request.args.get('preset')) }}">
-        <meta property="og:description" content="{{ request.args.get('preset') }}さんの学習データで文章を作ってみよう！">
+    @media (min-width: 992px) {
+        .content-wrapper {
+            max-width: 1200px;
+        }
+        .main-layout {
+            display: flex;
+            gap: var(--spacing-lg);
+            align-items: flex-start;
+        }
+        .settings-section, .result-section {
+            flex: 1;
+            margin-bottom: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="content-wrapper">
+        <nav class="breadcrumb">
+            <a href="/">ホーム</a>
+            <span class="text-muted mx-2">›</span>
+            <span class="text-muted">文章生成</span>
+        </nav>
+
+        <h1 class="main-title">文章生成</h1>
+
+        {% if internal_error %}
+        <div class="alert alert-danger">
+            {% autoescape False %}
+                {{ internal_error_message }}
+            {% endautoescape %}
+        </div>
         {% endif %}
-    </head>
-    <body>
-        <div class="page-container">
-            <div class="content-wrapper">
-                <nav class="breadcrumb">
-                    <a href="/">ホーム</a>
-                    <span class="text-muted mx-2">›</span>
-                    <span class="text-muted">文章生成</span>
-                </nav>
 
-                <h1 class="main-title">文章生成</h1>
-
-                {% if internal_error %}
-                <div class="alert alert-danger">
-                    {% autoescape False %}
-                        {{ internal_error_message }}
-                    {% endautoescape %}
+        <div class="main-layout">
+            <div class="settings-section">
+                <div class="settings-title">
+                    <i class="bi bi-gear"></i>
+                    設定
                 </div>
-                {% endif %}
-
-                <div class="main-layout">
-                    <div class="settings-section">
-                    <div class="settings-title">
-                        <i class="bi bi-gear"></i>
-                        設定
-                    </div>
-                    
-                    <form action="/generate/do" method="GET">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="input_acct" class="form-label">アカウント名</label>
-                                <input id="input_acct" type="text" name="acct" class="form-control" placeholder="username@host" value="{{ acct or request.args.get('preset', '') }}">
-                                {% if session.get('logged_in') %}
-                                <div class="form-text">ユーザー名に何も指定しないときは現在ログインしているアカウントの学習データを使用します</div>
-                                {% endif %}
-                            </div>
-                            <div class="form-group">
-                                <label for="input_min_words" class="form-label">最低単語数</label>
-                                <input id="input_min_words" type="number" name="min_words" class="form-control" placeholder="最低単語数(任意)" min="1" max="50" value="{{ min_words or request.args.get('min_words', '') }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="input_startswith" class="form-label">開始単語</label>
-                                <input id="input_startswith" type="text" name="startswith" class="form-control" placeholder="開始単語(任意)" maxlength="10" value="{{ startswith or request.args.get('startswith', '') }}">
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary btn-lg generate-btn">
-                            <i class="bi bi-magic"></i>
-                            生成
-                        </button>
-                    </form>
-                </div>
-
-                {% if text or failed %}
-                <div class="result-section">
-                    <div class="result-title">
-                        <i class="bi bi-chat-text"></i>
-                        生成された文章
-                    </div>
-                        {% if not failed %}
-                        <div class="generated-text">
-                            {{ text }}
-                        </div>
-                        {% else %}
-                        <div class="error-message">
-                            {% if not sw_failed %}
-                                文章を生成できませんでした。最低単語数を減らしたり、開始文字列を変えてみてください。(何回か繰り返すと生成できることもあります)
-                            {% else %}
-                                指定された単語で始まる文章を生成できませんでした。他の単語に変えてみてください。<br>
-                                <small class="text-muted">例: 「ウマ娘」ではなく「ウマ」にすると生成できることがあります。</small>
-                                {% if sw_suggest %}
-                                <div class="alert alert-warning mt-2" role="alert">
-                                    近いものとして {{ sw_suggest }} で始まる文章があります。
-                                </div>
-                                {% endif %}
+                
+                <form action="/generate/do" method="GET">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="input_acct" class="form-label">アカウント名</label>
+                            <input id="input_acct" type="text" name="acct" class="form-control" placeholder="username@host" value="{{ acct or request.args.get('preset', '') }}">
+                            {% if session.get('logged_in') %}
+                            <div class="form-text">ユーザー名に何も指定しないときは現在ログインしているアカウントの学習データを使用します</div>
                             {% endif %}
                         </div>
-                        {% endif %}
-                        
-                        <div class="action-buttons">
-                            <button id="copyButton" class="btn btn-primary" data-bs-trigger="manual" data-toggle="tooltip" data-bs-placement="bottom" title="コピーしました" {{ 'disabled' if failed }}>
-                                <i class="bi bi-clipboard"></i>
-                                クリップボードにコピー
-                            </button>
-                            <button class="btn btn-outline-primary" data-toggle="tooltip" data-bs-trigger="hover focus" data-bs-placement="bottom" title="文章を再生成します" onclick="location.reload();">
-                                <i class="bi bi-arrow-clockwise"></i>
-                                再生成
-                            </button>
-                            <div class="processing-time">
-                                <i class="bi bi-clock"></i>
-                                {{ '{0:.2f}'.format(proc_time) }}ms
-                            </div>
+                        <div class="form-group">
+                            <label for="input_min_words" class="form-label">最低単語数</label>
+                            <input id="input_min_words" type="number" name="min_words" class="form-control" placeholder="最低単語数(任意)" min="1" max="50" value="{{ min_words or request.args.get('min_words', '') }}">
                         </div>
-                        
-                        {% if not failed %}
-                        <div class="details-section">
-                            <details id="detail">
-                                <summary class="details-summary">
-                                    <i class="bi bi-info-circle"></i>
-                                    詳細情報
-                                </summary>
-                                <div class="details-content">
-                                    <h6>生成過程</h6>
-                                    <p>
-                                        {% autoescape False %}
-                                        {{ '&nbsp;→&nbsp;'.join(splited_text) }}
-                                        {% endautoescape %}
-                                    </p>
-                                    <h6>学習データサイズ</h6>
-                                    <p>{{ model_data_size }}</p>
-                                </div>
-                            </details>
+                        <div class="form-group">
+                            <label for="input_startswith" class="form-label">開始単語</label>
+                            <input id="input_startswith" type="text" name="startswith" class="form-control" placeholder="開始単語(任意)" maxlength="10" value="{{ startswith or request.args.get('startswith', '') }}">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg generate-btn">
+                        <i class="bi bi-magic"></i>
+                        生成
+                    </button>
+                </form>
+            </div>
+
+            {% if text or failed %}
+            <div class="result-section">
+                <div class="result-title">
+                    <i class="bi bi-chat-text"></i>
+                    生成された文章
+                </div>
+                {% if not failed %}
+                <div class="generated-text">
+                    {{ text }}
+                </div>
+                {% else %}
+                <div class="error-message">
+                    {% if not sw_failed %}
+                        文章を生成できませんでした。最低単語数を減らしたり、開始文字列を変えてみてください。(何回か繰り返すと生成できることもあります)
+                    {% else %}
+                        指定された単語で始まる文章を生成できませんでした。他の単語に変えてみてください。<br>
+                        <small class="text-muted">例: 「ウマ娘」ではなく「ウマ」にすると生成できることがあります。</small>
+                        {% if sw_suggest %}
+                        <div class="alert alert-warning mt-2" role="alert">
+                            近いものとして {{ sw_suggest }} で始まる文章があります。
                         </div>
                         {% endif %}
+                    {% endif %}
                 </div>
                 {% endif %}
+                
+                <div class="action-buttons">
+                    <button id="copyButton" class="btn btn-primary" data-bs-trigger="manual" data-toggle="tooltip" data-bs-placement="bottom" title="コピーしました" {{ 'disabled' if failed }}>
+                        <i class="bi bi-clipboard"></i>
+                        クリップボードにコピー
+                    </button>
+                    <button class="btn btn-outline-primary" data-toggle="tooltip" data-bs-trigger="hover focus" data-bs-placement="bottom" title="文章を再生成します" onclick="location.reload();">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        再生成
+                    </button>
+                    <div class="processing-time">
+                        <i class="bi bi-clock"></i>
+                        {{ '{0:.2f}'.format(proc_time) }}ms
+                    </div>
                 </div>
+                
+                {% if not failed %}
+                <div class="details-section">
+                    <details id="detail">
+                        <summary class="details-summary">
+                            <i class="bi bi-info-circle"></i>
+                            詳細情報
+                        </summary>
+                        <div class="details-content">
+                            <h6>生成過程</h6>
+                            <p>
+                                {% autoescape False %}
+                                {{ '&nbsp;→&nbsp;'.join(splited_text) }}
+                                {% endautoescape %}
+                            </p>
+                            <h6>学習データサイズ</h6>
+                            <p>{{ model_data_size }}</p>
+                        </div>
+                    </details>
+                </div>
+                {% endif %}
             </div>
+            {% endif %}
         </div>
+    </div>
+</div>
+{% endblock %}
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-        <script type="text/javascript">
-            window.addEventListener('load', function () {
-                $('[data-toggle="tooltip"]').tooltip();
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    function clipboard_set(text){
+        var pre = document.createElement('pre');
+        pre.style.webkitUserSelect = 'auto';
+        pre.style.userSelect = 'auto';
+        pre.textContent = text;
+        document.body.appendChild(pre);
+        document.getSelection().selectAllChildren(pre);
+        var result = document.execCommand('copy');
+        document.body.removeChild(pre);
+        return result;
+    }
 
-                $('#copyButton').tooltip({
-                    'title': 'コピーしました',
-                    'trigger': 'manual',
-                    'placement': 'bottom'
-                });
+    window.addEventListener('load', function () {
+        $('[data-toggle="tooltip"]').tooltip();
 
-                $('#copyButton').on('click', function () {
-                    clipboard_set(decodeURIComponent('{{ share_text }}'));
-                    $('#copyButton').tooltip('show');
-                });
-                $('#copyButton').on('shown.bs.tooltip', function () {
-                    setTimeout((function () {
-                        $(this).tooltip('hide');
-                    }).bind(this), 2000);
-                });
+        $('#copyButton').tooltip({
+            'title': 'コピーしました',
+            'trigger': 'manual',
+            'placement': 'bottom'
+        });
 
-                var detail = document.getElementById('detail');
+        $('#copyButton').on('click', function () {
+            clipboard_set(decodeURIComponent('{{ share_text }}'));
+            $('#copyButton').tooltip('show');
+        });
+        $('#copyButton').on('shown.bs.tooltip', function () {
+            setTimeout((function () {
+                $(this).tooltip('hide');
+            }).bind(this), 2000);
+        });
 
-                if (detail) {
-                    if (localStorage.getItem('detail_open') == 'true') {
-                        detail.open = true;
-                    }
-                }
+        var detail = document.getElementById('detail');
 
-                detail.addEventListener('toggle', function () {
-                    localStorage.setItem('detail_open', detail.open);
-                });
+        if (detail) {
+            if (localStorage.getItem('detail_open') == 'true') {
+                detail.open = true;
+            }
+        }
 
-            });
-        </script>
-    </body>
-</html>
+        detail.addEventListener('toggle', function () {
+            localStorage.setItem('detail_open', detail.open);
+        });
+    });
+</script>
+{% endblock %}

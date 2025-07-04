@@ -10,7 +10,7 @@ job_bp = Blueprint('job', __name__)
 @job_bp.route('/error_test')
 def error_test():
     """Simple route to render an error page for debugging."""
-    return render_template('job_error.html', job={'error': request.args.get('text')})
+    return render_template('job_error.html', page_type='job', job={'error': request.args.get('text')})
 
 
 @job_bp.route('/job_wait')
@@ -32,14 +32,14 @@ def job_wait():
     if not job_info['completed']:
         thread = job_info.get('thread')
         if thread and not thread.is_alive():
-            return make_response(render_template('job_error.html', message='スレッドが異常終了しました'), 500)
-        return render_template('job_wait.html', d=job_info)
+            return make_response(render_template('job_error.html', page_type='job', message='スレッドが異常終了しました'), 500)
+        return render_template('job_wait.html', page_type='job', d=job_info)
 
     # Handle completed job
     if job_info.get('error'):
-        return make_response(render_template('job_error.html', message=job_info['error']), 500)
+        return make_response(render_template('job_error.html', page_type='job', message=job_info['error']), 500)
 
     # Success – remove job and show result
     session['hasModelData'] = True
     job = job_status.pop(job_id)
-    return render_template('job_result.html', job=job) 
+    return render_template('job_result.html', page_type='job', job=job) 

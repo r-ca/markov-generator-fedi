@@ -10,7 +10,7 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def root():
     """Render landing page."""
-    return render_template('index.html')
+    return render_template('index.html', page_type='home')
 
 
 @main_bp.route('/privacy')
@@ -34,4 +34,4 @@ def contributors_page():
             "contributers": []
         }
     
-    return render_template('contributors.html', contributors=contributors_data) 
+    return render_template('contributors.html', page_type='feature', contributors=contributors_data) 

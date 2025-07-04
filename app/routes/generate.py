@@ -75,7 +75,7 @@ def _should_use_cache(acct: str, model_data: str) -> bool:
 @generate_bp.route('/generate')
 def generate_page():
     """Render the generation form page."""
-    return render_template('generate.html', text=None, acct='', share_text='', up=urllib.parse)
+    return render_template('generate.html', page_type='feature', text=None, acct='', share_text='', up=urllib.parse)
 
 
 @generate_bp.route('/generate/do', methods=['GET'])
@@ -99,6 +99,7 @@ def generate_do():
         if not session.get('logged_in'):
             return render_template(
                 'generate.html',
+                page_type='feature',
                 internal_error=True,
                 internal_error_message='自分の投稿から文章を作るにはログインしてください <a href="/#loginModal">ログインする</a>',
                 text='',
@@ -122,6 +123,7 @@ def generate_do():
         print(f"[ERROR] Database error in generate_do: {e}")
         return render_template(
             'generate.html',
+            page_type='feature',
             internal_error=True,
             internal_error_message='データベースエラーが発生しました。しばらく時間をおいてから再試行してください。',
             text='',
@@ -134,6 +136,7 @@ def generate_do():
     if not data:
         return render_template(
             'generate.html',
+            page_type='feature',
             internal_error=True,
             internal_error_message=f'{acct} の学習データは見つかりませんでした。',
             text='',
@@ -147,6 +150,7 @@ def generate_do():
     if session.get('acct') != acct and not bool(data['allow_generate_by_other']):
         return render_template(
             'generate.html',
+            page_type='feature',
             internal_error=True,
             internal_error_message='このユーザーは他のユーザーからの文章生成を許可していません。',
             text='',
@@ -214,6 +218,7 @@ def generate_do():
         if not text:
             return render_template(
                 'generate.html',
+                page_type='feature',
                 text='',
                 splited_text=[],
                 acct=acct,
@@ -233,6 +238,7 @@ def generate_do():
 
         return render_template(
             'generate.html',
+            page_type='feature',
             text=text,
             splited_text=splited_text,
             acct=acct,
@@ -247,6 +253,7 @@ def generate_do():
         print(f"[ERROR] Exception in generate_do: {e}")
         return render_template(
             'generate.html',
+            page_type='feature',
             internal_error=True,
             internal_error_message='文章生成中にエラーが発生しました。しばらく時間をおいてから再試行してください。',
             text='',
