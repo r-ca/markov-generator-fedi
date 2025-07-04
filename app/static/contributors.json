@@ -47,13 +47,11 @@
     {
       "displayName": "Claude",
       "iconUrl": "https://github.com/claude.png",
-      "github": "https://github.com/claude",
       "description": "ファイル分割, コーディングアシスタント"
     },
     {
       "displayName": "Gemini",
       "iconUrl": "https://github.com/gemini-code-assist.png",
-      "github": "https://github.com/gemini-code-assist",
       "description": "コーディングアシスタント"
     }
   ]
