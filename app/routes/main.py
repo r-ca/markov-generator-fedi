@@ -29,7 +29,7 @@ def contributors_page():
             contributors_data = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         contributors_data = {
-            "authers": [],
+            "authors": [],
             "specialContributers": [],
             "contributers": []
         }

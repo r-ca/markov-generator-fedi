@@ -45,6 +45,9 @@
                 margin-bottom: 1rem;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.1);
                 transition: transform 0.2s ease, box-shadow 0.2s ease;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
             }
             .contributor-card:hover {
                 transform: translateY(-2px);
@@ -55,7 +58,13 @@
                 height: 64px;
                 border-radius: 50%;
                 object-fit: cover;
-                margin-bottom: 1rem;
+                flex-shrink: 0;
+                background-color: #f8f9fa;
+                border: 2px solid #e9ecef;
+            }
+            .contributor-info {
+                flex: 1;
+                text-align: left;
             }
             .contributor-name {
                 font-weight: 600;
@@ -124,17 +133,19 @@
                     <i class="bi bi-star-fill text-warning"></i>
                     著者
                 </h2>
-                {% if contributors.authers %}
+                {% if contributors.authors %}
                 <div class="row">
-                    {% for author in contributors.authers %}
+                    {% for author in contributors.authors %}
                     <div class="col-md-6 col-lg-4">
-                        <div class="contributor-card text-center">
+                        <div class="contributor-card">
                             <img src="{{ author.iconUrl }}" alt="{{ author.displayName }}" class="contributor-avatar">
-                            <div class="contributor-name">{{ author.displayName }}</div>
-                            <a href="{{ author.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                                <i class="bi bi-github"></i>
-                                GitHub
-                            </a>
+                            <div class="contributor-info">
+                                <div class="contributor-name">{{ author.displayName }}</div>
+                                <a href="{{ author.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                                    <i class="bi bi-github"></i>
+                                    GitHub
+                                </a>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
@@ -157,13 +168,15 @@
                 <div class="row">
                     {% for contributor in contributors.specialContributers %}
                     <div class="col-md-6 col-lg-4">
-                        <div class="contributor-card text-center">
+                        <div class="contributor-card">
                             <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
-                            <div class="contributor-name">{{ contributor.displayName }}</div>
-                            <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                                <i class="bi bi-github"></i>
-                                GitHub
-                            </a>
+                            <div class="contributor-info">
+                                <div class="contributor-name">{{ contributor.displayName }}</div>
+                                <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                                    <i class="bi bi-github"></i>
+                                    GitHub
+                                </a>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
@@ -186,13 +199,15 @@
                 <div class="row">
                     {% for contributor in contributors.contributers %}
                     <div class="col-md-6 col-lg-4">
-                        <div class="contributor-card text-center">
+                        <div class="contributor-card">
                             <img src="{{ contributor.iconUrl }}" alt="{{ contributor.displayName }}" class="contributor-avatar">
-                            <div class="contributor-name">{{ contributor.displayName }}</div>
-                            <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
-                                <i class="bi bi-github"></i>
-                                GitHub
-                            </a>
+                            <div class="contributor-info">
+                                <div class="contributor-name">{{ contributor.displayName }}</div>
+                                <a href="{{ contributor.github }}" target="_blank" rel="noopener noreferrer" class="contributor-link">
+                                    <i class="bi bi-github"></i>
+                                    GitHub
+                                </a>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
