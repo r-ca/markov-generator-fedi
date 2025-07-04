@@ -73,11 +73,11 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
         st = time.time()
         _log_memory_usage("START", job_id)
         
-        job_status[job_id]['progress'] = 20
+        job_status[job_id]['progress'] = 10
         job_status[job_id]['progress_str'] = '投稿を取得しています...'
 
         try:
-            importer = MisskeyDataImporter(session_data, token)
+            importer = MisskeyDataImporter(session_data, token, job_id)
             lines, imported_notes = importer.fetch_lines()
             _log_memory_usage("AFTER_FETCH", job_id)
         except Exception as e:
@@ -88,7 +88,7 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
             )
             return
 
-        job_status[job_id]['progress_str'] = 'モデルを作成しています'
+        job_status[job_id]['progress_str'] = f'投稿取得完了 ({imported_notes}件) - モデルを作成しています'
         job_status[job_id]['progress'] = 80
 
         try:
@@ -140,7 +140,7 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
             error=None,
             progress=100,
             progress_str='完了',
-            result=f'取り込み済投稿数: {imported_notes}<br>処理時間: {(time.time() - st)*1000:.2f} ミリ秒',
+            result=f'学習完了！<br>取り込み済投稿数: {imported_notes}件<br>処理時間: {(time.time() - st)*1000:.2f} ミリ秒',
             completed_at=time.time(),
         )
         
@@ -193,11 +193,11 @@ def start_mastodon_job(
         st = time.time()
         _log_memory_usage("START", job_id)
         
-        job_status[job_id]['progress'] = 20
-        job_status[job_id]['progress_str'] = '投稿を取得しています。'
+        job_status[job_id]['progress'] = 10
+        job_status[job_id]['progress_str'] = '投稿を取得しています...'
 
         try:
-            importer = MastodonDataImporter(session_data, token, account)
+            importer = MastodonDataImporter(session_data, token, account, job_id)
             lines, imported_toots = importer.fetch_lines()
             _log_memory_usage("AFTER_FETCH", job_id)
         except Exception as e:
@@ -208,7 +208,7 @@ def start_mastodon_job(
             )
             return
 
-        job_status[job_id]['progress_str'] = 'モデルを作成しています'
+        job_status[job_id]['progress_str'] = f'投稿取得完了 ({imported_toots}件) - モデルを作成しています'
         job_status[job_id]['progress'] = 80
 
         try:
@@ -260,7 +260,7 @@ def start_mastodon_job(
             error=None,
             progress=100,
             progress_str='完了',
-            result=f'取り込み済投稿数: {imported_toots}<br>処理時間: {(time.time() - st)*1000:.2f} ミリ秒',
+            result=f'学習完了！<br>取り込み済投稿数: {imported_toots}件<br>処理時間: {(time.time() - st)*1000:.2f} ミリ秒',
             completed_at=time.time(),
         )
         
