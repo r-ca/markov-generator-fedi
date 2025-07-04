@@ -59,6 +59,29 @@
         color: var(--text-muted);
     }
     
+    .result-skeleton {
+        min-height: 200px;
+        border: 2px dashed var(--border-color);
+        border-radius: var(--border-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-style: italic;
+        background-color: var(--bg-secondary);
+    }
+    
+    .result-skeleton i {
+        font-size: 2rem;
+        margin-bottom: var(--spacing-sm);
+        opacity: 0.5;
+    }
+    
+    .result-skeleton .skeleton-message {
+        text-align: center;
+        line-height: 1.5;
+    }
+    
     @media (max-width: 768px) {
         .action-buttons {
             flex-direction: column;
@@ -142,69 +165,77 @@
         </form>
     </div>
 
-    {% if text or failed %}
     <div class="section-card">
         <div class="section-title">
             <i class="bi bi-chat-text"></i>
             生成された文章
         </div>
-        {% if not failed %}
-        <div class="generated-text">
-            {{ text }}
-        </div>
-        {% else %}
-        <div class="error-message">
-            {% if not sw_failed %}
-                文章を生成できませんでした。最低単語数を減らしたり、開始文字列を変えてみてください。(何回か繰り返すと生成できることもあります)
-            {% else %}
-                指定された単語で始まる文章を生成できませんでした。他の単語に変えてみてください。<br>
-                <small class="text-muted">例: 「ウマ娘」ではなく「ウマ」にすると生成できることがあります。</small>
-                {% if sw_suggest %}
-                <div class="alert alert-warning mt-2" role="alert">
-                    近いものとして {{ sw_suggest }} で始まる文章があります。
-                </div>
-                {% endif %}
-            {% endif %}
-        </div>
-        {% endif %}
         
-        <div class="action-buttons">
-            <button id="copyButton" class="btn btn-primary" data-bs-trigger="manual" data-toggle="tooltip" data-bs-placement="bottom" title="コピーしました" {{ 'disabled' if failed }}>
-                <i class="bi bi-clipboard"></i>
-                クリップボードにコピー
-            </button>
-            <button class="btn btn-outline-primary" data-toggle="tooltip" data-bs-trigger="hover focus" data-bs-placement="bottom" title="文章を再生成します" onclick="location.reload();">
-                <i class="bi bi-arrow-clockwise"></i>
-                再生成
-            </button>
-            <div class="processing-time">
-                <i class="bi bi-clock"></i>
-                {{ '{0:.2f}'.format(proc_time) }}ms
+        {% if text or failed %}
+            {% if not failed %}
+            <div class="generated-text">
+                {{ text }}
             </div>
-        </div>
-        
-        {% if not failed %}
-        <div class="details-section">
-            <details id="detail">
-                <summary class="details-summary">
-                    <i class="bi bi-info-circle"></i>
-                    詳細情報
-                </summary>
-                <div class="details-content">
-                    <h6>生成過程</h6>
-                    <p>
-                        {% autoescape False %}
-                        {{ '&nbsp;→&nbsp;'.join(splited_text) }}
-                        {% endautoescape %}
-                    </p>
-                    <h6>学習データサイズ</h6>
-                    <p>{{ model_data_size }}</p>
+            {% else %}
+            <div class="error-message">
+                {% if not sw_failed %}
+                    文章を生成できませんでした。最低単語数を減らしたり、開始文字列を変えてみてください。(何回か繰り返すと生成できることもあります)
+                {% else %}
+                    指定された単語で始まる文章を生成できませんでした。他の単語に変えてみてください。<br>
+                    <small class="text-muted">例: 「ウマ娘」ではなく「ウマ」にすると生成できることがあります。</small>
+                    {% if sw_suggest %}
+                    <div class="alert alert-warning mt-2" role="alert">
+                        近いものとして {{ sw_suggest }} で始まる文章があります。
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <div class="action-buttons">
+                <button id="copyButton" class="btn btn-primary" data-bs-trigger="manual" data-toggle="tooltip" data-bs-placement="bottom" title="コピーしました" {{ 'disabled' if failed }}>
+                    <i class="bi bi-clipboard"></i>
+                    クリップボードにコピー
+                </button>
+                <button class="btn btn-outline-primary" data-toggle="tooltip" data-bs-trigger="hover focus" data-bs-placement="bottom" title="文章を再生成します" onclick="location.reload();">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    再生成
+                </button>
+                <div class="processing-time">
+                    <i class="bi bi-clock"></i>
+                    {{ '{0:.2f}'.format(proc_time) }}ms
                 </div>
-            </details>
-        </div>
+            </div>
+            
+            {% if not failed %}
+            <div class="details-section">
+                <details id="detail">
+                    <summary class="details-summary">
+                        <i class="bi bi-info-circle"></i>
+                        詳細情報
+                    </summary>
+                    <div class="details-content">
+                        <h6>生成過程</h6>
+                        <p>
+                            {% autoescape False %}
+                            {{ '&nbsp;→&nbsp;'.join(splited_text) }}
+                            {% endautoescape %}
+                        </p>
+                        <h6>学習データサイズ</h6>
+                        <p>{{ model_data_size }}</p>
+                    </div>
+                </details>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="result-skeleton">
+                <div class="skeleton-message">
+                    <i class="bi bi-chat-dots"></i>
+                    <div>「生成」ボタンを押すと文章がここに表示されます</div>
+                </div>
+            </div>
         {% endif %}
     </div>
-    {% endif %}
 </div>
 {% endblock %}
 
