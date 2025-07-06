@@ -231,7 +231,7 @@ def generate_do():
             )
 
         share_text = (
-            f'{text}\n\n{acct}\n#markov-generator-fedi\n{request.host_url}generate'
+            f'{text}\n\n`{acct}`\n#markov-generator-fedi\n{request.host_url}generate'
             f'?preset={urllib.parse.quote(acct)}&min_words={min_words}'
             + (f"&startswith={urllib.parse.quote(startswith)}" if startswith else '')
         )
