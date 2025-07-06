@@ -117,7 +117,7 @@ def start_misskey_job(session_data: Dict[str, Any], token: str) -> str:
             cur.execute('DELETE FROM model_data WHERE acct = ?', (data['acct'],))
             cur.execute(
                 'INSERT INTO model_data(acct, data, allow_generate_by_other) VALUES (?, ?, ?)',
-                (data['acct'], text_model.to_json(), int(allow_by_other == 'on')),
+                (data['acct'], text_model.to_json(), int(allow_by_other == 'true')),
             )
             cur.close()
             db.commit()
@@ -238,7 +238,7 @@ def start_mastodon_job(
             cur.execute('DELETE FROM model_data WHERE acct = ?', (data['acct'],))
             cur.execute(
                 'INSERT INTO model_data(acct, data, allow_generate_by_other) VALUES (?, ?, ?)',
-                (data['acct'], text_model.to_json(), int(allow_by_other == 'on')),
+                (data['acct'], text_model.to_json(), int(allow_by_other == 'true')),
             )
             cur.close()
             db.commit()
