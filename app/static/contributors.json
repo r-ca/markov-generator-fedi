@@ -28,16 +28,16 @@
       "iconUrl": "https://github.com/Steve-0628.png",
       "github": "https://github.com/Steve-0628",
       "description": "テスト & フィードバック, 実装例の提供"
-    }
-  ],
-  "thanks": [
+    },
     {
       "displayName": "SyoBoN",
       "iconUrl": "https://github.com/syobocat.png",
       "github": "https://github.com/syobocat",
       "url": "https://syobon.net/",
-      "description": "テスト & フィードバック"
-    },
+      "description": "テスト & フィードバック, PR #28など"
+    }
+  ],
+  "thanks": [
     {
       "displayName": "nexryai",
       "iconUrl": "https://github.com/nexryai.png",
