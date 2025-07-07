@@ -680,7 +680,7 @@
 
     // Update share text for copy functionality
     function updateShareText(item) {
-        const shareText = `${item.text}\n\n${item.acct}\n#markov-generator-fedi\n${window.location.origin}/generate?preset=${encodeURIComponent(item.acct)}&min_words=${item.min_words || 1}${item.startswith ? `&startswith=${encodeURIComponent(item.startswith)}` : ''}`;
+        const shareText = `${item.text}\n\n\`${item.acct}\`\n#markov-generator-fedi\n${window.location.origin}/generate?preset=${encodeURIComponent(item.acct)}&min_words=${item.min_words || 1}${item.startswith ? `&startswith=${encodeURIComponent(item.startswith)}` : ''}`;
 
         // Update copy button functionality
         $('#copyButton').off('click').on('click', function () {
