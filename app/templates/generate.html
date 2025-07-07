@@ -120,6 +120,79 @@
             margin-bottom: 0;
         }
     }
+
+    /* Generation History Navigation Styles */
+    .history-navigation {
+        margin-bottom: var(--spacing-lg);
+        padding: var(--spacing-md);
+        background-color: var(--light-bg);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+    }
+
+    .history-controls {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        justify-content: center;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .history-indicator {
+        font-weight: 500;
+        color: var(--main-title-color);
+        font-size: var(--font-size-sm);
+        min-width: 60px;
+        text-align: center;
+    }
+
+    .history-controls .btn {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .history-controls .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .history-help {
+        text-align: center;
+        font-size: var(--font-size-sm);
+    }
+
+    .history-help i {
+        margin-right: var(--spacing-xs);
+    }
+
+    /* Generated content with transition */
+    .generated-text {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .generated-text.history-transition {
+        opacity: 0.7;
+        transform: translateX(10px);
+    }
+
+    /* Mobile responsive for history navigation */
+    @media (max-width: 768px) {
+        .history-navigation {
+            padding: var(--spacing-sm);
+        }
+
+        .history-controls {
+            gap: var(--spacing-sm);
+        }
+
+        .history-controls .btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            font-size: var(--font-size-sm);
+        }
+
+        .history-help {
+            display: none; /* ヒントテキストを隠してスペース節約 */
+        }
+    }
 </style>
 {% endblock %}
 
@@ -192,6 +265,25 @@
             </div>
             {% endif %}
             
+            <!-- Generation History Navigation -->
+            <div class="history-navigation" id="historyNavigation" style="display: none;">
+                <div class="history-controls">
+                    <button class="btn btn-outline-primary btn-sm" id="historyPrevBtn" title="前の生成結果">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <span class="history-indicator" id="historyIndicator">1 / 1</span>
+                    <button class="btn btn-outline-primary btn-sm" id="historyNextBtn" title="次の生成結果">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" id="historyClearBtn" title="履歴をクリア">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+                <div class="history-help text-muted">
+                    <small><i class="bi bi-info-circle"></i> Alt + ←→で履歴移動、スワイプでも操作可能</small>
+                </div>
+            </div>
+            
             <div class="action-buttons">
                 <button id="copyButton" class="btn btn-primary" data-bs-trigger="manual" data-toggle="tooltip" data-bs-placement="bottom" title="コピーしました" {{ 'disabled' if failed }}>
                     <i class="bi bi-clipboard"></i>
@@ -242,6 +334,111 @@
 {% block extra_js %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
 <script type="text/javascript">
+    // Generation History Manager
+    class GenerationHistory {
+        constructor() {
+            this.storageKey = 'markov_generation_history';
+            this.maxItems = 10;
+            this.data = this.loadFromStorage();
+        }
+
+        loadFromStorage() {
+            try {
+                const stored = sessionStorage.getItem(this.storageKey);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    return {
+                        items: parsed.items || [],
+                        currentIndex: parsed.currentIndex || 0
+                    };
+                }
+            } catch (e) {
+                console.warn('Failed to load generation history:', e);
+            }
+            return { items: [], currentIndex: 0 };
+        }
+
+        saveToStorage() {
+            try {
+                sessionStorage.setItem(this.storageKey, JSON.stringify(this.data));
+            } catch (e) {
+                console.warn('Failed to save generation history:', e);
+            }
+        }
+
+        addItem(generationData) {
+            const item = {
+                id: Date.now(),
+                text: generationData.text,
+                acct: generationData.acct,
+                min_words: generationData.min_words,
+                startswith: generationData.startswith || '',
+                proc_time: generationData.proc_time,
+                timestamp: Date.now(),
+                splited_text: generationData.splited_text || [],
+                model_data_size: generationData.model_data_size || ''
+            };
+
+            // 重複チェック（同じ文章の連続生成を避ける）
+            if (this.data.items.length > 0) {
+                const lastItem = this.data.items[this.data.items.length - 1];
+                if (lastItem.text === item.text && lastItem.acct === item.acct) {
+                    return false; // 重複のため追加しない
+                }
+            }
+
+            this.data.items.push(item);
+
+            // 最大件数を超えた場合、古いものを削除
+            if (this.data.items.length > this.maxItems) {
+                this.data.items.shift();
+            }
+
+            // currentIndexを最新に設定
+            this.data.currentIndex = this.data.items.length - 1;
+            this.saveToStorage();
+            return true;
+        }
+
+        getCurrentItem() {
+            if (this.data.items.length === 0) return null;
+            return this.data.items[this.data.currentIndex] || null;
+        }
+
+        navigateTo(index) {
+            if (index >= 0 && index < this.data.items.length) {
+                this.data.currentIndex = index;
+                this.saveToStorage();
+                return this.getCurrentItem();
+            }
+            return null;
+        }
+
+        navigateBy(offset) {
+            const newIndex = this.data.currentIndex + offset;
+            return this.navigateTo(newIndex);
+        }
+
+        clear() {
+            this.data = { items: [], currentIndex: 0 };
+            this.saveToStorage();
+        }
+
+        getNavigationInfo() {
+            if (this.data.items.length === 0) return null;
+            return {
+                current: this.data.currentIndex + 1,
+                total: this.data.items.length,
+                hasPrev: this.data.currentIndex > 0,
+                hasNext: this.data.currentIndex < this.data.items.length - 1
+            };
+        }
+
+        hasHistory() {
+            return this.data.items.length > 1;
+        }
+    }
+
     function clipboard_set(text){
         var pre = document.createElement('pre');
         pre.style.webkitUserSelect = 'auto';
@@ -254,7 +451,32 @@
         return result;
     }
 
+    // Global history manager instance
+    let historyManager = null;
+
     window.addEventListener('load', function () {
+        // Initialize history manager
+        historyManager = new GenerationHistory();
+
+        // Check if current page has generation result
+        {% if text and not failed %}
+        // Add current generation to history
+        const currentGeneration = {
+            text: {{ text|tojson }},
+            acct: {{ acct|tojson }},
+            min_words: {{ min_words or 1 }},
+            startswith: {{ (startswith or '')|tojson }},
+            proc_time: {{ proc_time or 0 }},
+            splited_text: {{ splited_text|tojson }},
+            model_data_size: {{ (model_data_size or '')|tojson }}
+        };
+
+        historyManager.addItem(currentGeneration);
+        {% endif %}
+
+        // Update history navigation display
+        updateHistoryNavigation();
+
         $('[data-toggle="tooltip"]').tooltip();
 
         $('#copyButton').tooltip({
@@ -284,6 +506,187 @@
         detail.addEventListener('toggle', function () {
             localStorage.setItem('detail_open', detail.open);
         });
+
+        // History navigation event listeners
+        const prevBtn = document.getElementById('historyPrevBtn');
+        const nextBtn = document.getElementById('historyNextBtn');
+        const clearBtn = document.getElementById('historyClearBtn');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function() {
+                const item = historyManager.navigateBy(-1);
+                if (item) {
+                    displayHistoryItem(item);
+                    updateHistoryNavigation();
+                }
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function() {
+                const item = historyManager.navigateBy(1);
+                if (item) {
+                    displayHistoryItem(item);
+                    updateHistoryNavigation();
+                }
+            });
+        }
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                if (confirm('履歴をすべて削除しますか？')) {
+                    historyManager.clear();
+                    updateHistoryNavigation();
+                    // Reload to show current generation only
+                    location.reload();
+                }
+            });
+        }
+
+        // Keyboard shortcuts for history navigation
+        document.addEventListener('keydown', function(e) {
+            // Alt + Left Arrow: Previous history
+            if (e.altKey && e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (historyManager && historyManager.hasHistory()) {
+                    const item = historyManager.navigateBy(-1);
+                    if (item) {
+                        displayHistoryItem(item);
+                        updateHistoryNavigation();
+                    }
+                }
+            }
+            // Alt + Right Arrow: Next history
+            else if (e.altKey && e.key === 'ArrowRight') {
+                e.preventDefault();
+                if (historyManager && historyManager.hasHistory()) {
+                    const item = historyManager.navigateBy(1);
+                    if (item) {
+                        displayHistoryItem(item);
+                        updateHistoryNavigation();
+                    }
+                }
+            }
+        });
+
+        // Touch events for mobile swipe navigation
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const generatedTextElement = document.querySelector('.generated-text');
+        const swipeThreshold = 50; // Minimum distance for swipe detection
+
+        if (generatedTextElement) {
+            generatedTextElement.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            generatedTextElement.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+        }
+
+        function handleSwipe() {
+            const swipeDistance = touchStartX - touchEndX;
+
+            if (Math.abs(swipeDistance) > swipeThreshold && historyManager && historyManager.hasHistory()) {
+                let item = null;
+
+                if (swipeDistance > 0) {
+                    // Left swipe: Next history
+                    item = historyManager.navigateBy(1);
+                } else {
+                    // Right swipe: Previous history
+                    item = historyManager.navigateBy(-1);
+                }
+
+                if (item) {
+                    displayHistoryItem(item);
+                    updateHistoryNavigation();
+                }
+            }
+        }
     });
+
+    // History navigation update function
+    function updateHistoryNavigation() {
+        const navigation = document.getElementById('historyNavigation');
+        const indicator = document.getElementById('historyIndicator');
+        const prevBtn = document.getElementById('historyPrevBtn');
+        const nextBtn = document.getElementById('historyNextBtn');
+
+        if (!historyManager || !historyManager.hasHistory()) {
+            navigation.style.display = 'none';
+            return;
+        }
+
+        navigation.style.display = 'block';
+        const navInfo = historyManager.getNavigationInfo();
+
+        if (navInfo) {
+            indicator.textContent = `${navInfo.current} / ${navInfo.total}`;
+            prevBtn.disabled = !navInfo.hasPrev;
+            nextBtn.disabled = !navInfo.hasNext;
+        }
+    }
+
+    // Display generation from history
+    function displayHistoryItem(item) {
+        if (!item) return;
+
+        // Add transition effect
+        const generatedText = document.querySelector('.generated-text');
+        if (generatedText) {
+            generatedText.classList.add('history-transition');
+
+            setTimeout(() => {
+                // Update content
+                generatedText.textContent = item.text;
+
+                // Update other elements
+                const processingTime = document.querySelector('.processing-time');
+                if (processingTime && item.proc_time) {
+                    processingTime.innerHTML = `<i class="bi bi-clock"></i> ${item.proc_time.toFixed(2)}ms`;
+                }
+
+                // Update details section if present
+                const detailsContent = document.querySelector('.details-content');
+                if (detailsContent && item.splited_text && item.splited_text.length > 0) {
+                    const processSection = detailsContent.querySelector('p');
+                    if (processSection) {
+                        const splitedHtml = item.splited_text.map(word => 
+                            `<span class="badge bg-info">${word}</span>`
+                        ).join('&nbsp;→&nbsp;');
+                        processSection.innerHTML = splitedHtml;
+                    }
+                }
+
+                // Update model data size
+                if (item.model_data_size) {
+                    const sizeElement = detailsContent?.querySelector('p:last-child');
+                    if (sizeElement) {
+                        sizeElement.textContent = item.model_data_size;
+                    }
+                }
+
+                // Update copy button with new share text
+                updateShareText(item);
+
+                // Remove transition effect
+                generatedText.classList.remove('history-transition');
+            }, 100);
+        }
+    }
+
+    // Update share text for copy functionality
+    function updateShareText(item) {
+        const shareText = `${item.text}\n\n${item.acct}\n#markov-generator-fedi\n${window.location.origin}/generate?preset=${encodeURIComponent(item.acct)}&min_words=${item.min_words || 1}${item.startswith ? `&startswith=${encodeURIComponent(item.startswith)}` : ''}`;
+
+        // Update copy button functionality
+        $('#copyButton').off('click').on('click', function () {
+            clipboard_set(shareText);
+            $('#copyButton').tooltip('show');
+        });
+    }
 </script>
 {% endblock %}
